@@ -128,3 +128,14 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+
+# Logs and databases
+*.log
+*.sql
+*.psql
