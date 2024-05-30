@@ -1,11 +1,11 @@
 import React from 'react';
-import '../stylesheets/scss/styles.scss'; // make sure to import your styles
+import '../stylesheets/scss/styles.scss'; // Make sure to import your styles
 
-const LandingComp = () => {
+const LandingComp: React.FC = () => {
   return (
-    // this first style centers the text in the middle of the page
+    // This first style centers the text in the middle of the page
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <div >
+      <div>
         <span style={{ fontSize: '3rem' }}>get</span>
         <button className="btn" style={{ fontSize: '5rem', margin: '.5rem' }}>gitRésumé</button>
         <span style={{ fontSize: '3rem' }}>to get your résumé from git</span>

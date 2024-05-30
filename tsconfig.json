@@ -5,26 +5,25 @@
       "allowJs": true,
       "skipLibCheck": true,
       "strict": true,
-      "forceConsistentCasingInFileNames": true, 
-      "noEmit": true,
-      "esModuleInterop": true, 
+      "forceConsistentCasingInFileNames": true,
+      "noEmit": false,
+      "esModuleInterop": true,
       "module": "esnext",
-      "moduleResolution": "node", 
-      "resolveJsonModule": true, 
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
       "isolatedModules": true,
-      "jsx": "react-jsx", 
+      "jsx": "react-jsx",
       "incremental": true,
-      "allowImportingTsExtensions": true,
       "plugins": [
         {
           "name": "typescript-plugin-css-modules"
         }
       ],
       "paths": {
-        "@/*": ["./src/*"]
+        "@/*": ["./client/*"]
       }
     },
-    "include": ["src"], 
+    "include": ["client/**/*"],
     "exclude": ["node_modules", "build"]
   }
   
