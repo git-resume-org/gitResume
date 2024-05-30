@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import 'normalize.css';
-import './stylesheets/scss/main.scss';
+import './stylesheets/scss/styles.scss';
 
 import App from './App';
 import store from './store';
