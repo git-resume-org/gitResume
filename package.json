@@ -4,7 +4,8 @@
   "description": "Generate bullet points for your resume from your git commit history",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "start": "webpack serve --config webpack.config.js --mode development",
+    "build": "webpack --config webpack.config.js --mode production",
     "dev": "concurrently --kill-others-on-fail \"npm run serve\" \"nodemon server/server.ts\"",
     "lint": "eslint . && stylelint 'client/**/*.scss'",
     "lint:fix": "eslint . --fix && stylelint 'client/**/*.scss' --fix",
@@ -36,6 +37,7 @@
     "@babel/preset-react": "^7.24.6",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.13",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
     "babel-loader": "^9.1.3",
