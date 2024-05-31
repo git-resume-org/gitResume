@@ -1,4 +1,4 @@
-module.exports = {
+exports = {
   env: {
       browser: true,
       es2022: true,

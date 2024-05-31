@@ -2,10 +2,12 @@
   "name": "git-resume",
   "version": "0.0.1",
   "description": "Generate bullet points for your resume from your git commit history",
-  "main": "index.js",
+  "exports": "./index.js",
+  "type": "module",
+  "node": ">=18",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "concurrently --kill-others-on-fail \"npm run serve\" \"nodemon server/server.ts\"",
+    "dev": "concurrently --kill-others-on-fail \"npm run serve\" \"nodemon server/server.js\"",
     "lint": "eslint . && stylelint 'client/**/*.scss'",
     "lint:fix": "eslint . --fix && stylelint 'client/**/*.scss' --fix",
     "serve": "webpack serve --open --hot --mode development"
@@ -34,6 +36,8 @@
     "@babel/plugin-transform-class-properties": "^7.24.6",
     "@babel/preset-env": "^7.24.6",
     "@babel/preset-react": "^7.24.6",
+    "@babel/preset-typescript": "^7.24.6",
+    "@octokit/oauth-app": "^7.1.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.13",
     "@types/react-dom": "^18.3.0",
@@ -44,6 +48,7 @@
     "css-loader": "^7.1.2",
     "dot-env": "^0.0.1",
     "eslint": "^9.3.0",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
     "highlight.js": "^11.9.0",
     "html-webpack-plugin": "^5.6.0",
     "modern-normalize": "^2.0.0",
@@ -62,19 +67,21 @@
     "stylelint-scss": "^6.3.0",
     "stylelint-webpack-plugin": "^5.0.1",
     "tailwindcss": "^3.4.3",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "@octokit/core": "^6.1.2",
     "@reduxjs/toolkit": "^2.2.5",
     "@types/react-redux": "^7.1.33",
+    "esm": "^3.2.25",
     "express": "^4.19.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-redux": "^9.1.2",
-    "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.2"
+    "react-redux": "^9.1.2"
   }
 }
