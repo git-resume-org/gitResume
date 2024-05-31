@@ -7,22 +7,22 @@ const devMode = process.env.NODE_ENV !== 'production';
 module.exports = {
   mode: devMode ? 'development' : 'production',
   entry: {
-    bundle: path.resolve(__dirname, 'client/index.tsx'),
+    bundle: path.resolve(__dirname, 'client/index.tsx'), // The entry point for our application.
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'js/[name][contenthash].js',
-    clean: true,
-    assetModuleFilename: 'assets/[name][ext]',
+    path: path.resolve(__dirname, 'dist'), // Output directory for the bundled files.
+    filename: 'js/[name][contenthash].js', // Name of the bundled JavaScript file.
+    clean: true, // Clean the "dist" directory before each build.
+    assetModuleFilename: 'assets/[name][ext]', // Asset filenames for images and other files.
   },
-  devtool: 'source-map',
+  devtool: 'source-map', // Generate source maps for easier debugging.
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, 'dist'), // Serve static files from the "dist" directory.
       publicPath: "/",
     },
-    compress: false,
-    port: 3000,
+    compress: false, // if true, compresses assets to speed up server responses.
+    port: 3000, // Port number for the development server.
     hot: true,
     historyApiFallback: true,
   },
@@ -62,9 +62,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'gitRésumé',
-      filename: 'index.html',
-      template: 'client/template.html',
+      title: 'gitRésumé', // The title of the generated HTML file.
+      filename: 'index.html', // The name of the generated HTML file.
+      template: 'client/template.html', // Use the "template.html" file as the base for the generated HTML.
     }),
     new StyleLintPlugin({
       configFile: '.stylelintrc',
