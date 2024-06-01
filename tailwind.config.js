@@ -6,6 +6,8 @@ module.exports = {
       colors: {
         greenGR: '#62e6ce',
         blueGR: '#62aee6',
+        lavenderGR: '#c4b0fc',
+        blackGR: '#010102',
       },
     },
   },
