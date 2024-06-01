@@ -24,9 +24,9 @@ authController.verify = async (req, res, next) => {
 };
 
 authController.ghLogin = async (req, res, next) => {
-
+  // prompt=consent&
   try {
-    const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&redirect_uri=http://localhost:3000/api/auth/call&scope=user`;
+    const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
     res.redirect(redirectURI);
   } catch (error) {
     console.log(error);
@@ -97,6 +97,17 @@ authController.verifyTokenTestPassed = (req, res, next) => {
   res.send('Verified');
   return next();
 }
+
+authController.ghLogout = async (req, res, next) => {
+  // prompt=consent&: // this prompts the reauthorization screen of github
+  try {
+    const redirectURI = `https://github.com/login/oauth/authorize?prompt=consent&scope=repo&client_id=${ghClientId}`;
+    res.redirect(redirectURI);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('An error occurred');
+  }
+};
 
 authController.error = (req, res, next) => {
   console.log('authController: error');
