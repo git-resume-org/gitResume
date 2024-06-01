@@ -3,26 +3,22 @@ import { authController } from '../controllers/authController.js';
 
 const authRouter = express.Router();
 
-// hit only during sign in
-authRouter.get('/signin', (req, res) => {
-  // console.log('authRouter: signin');
-  if (req.session.accessToken) {
-
-    console.log('authRouter: signin: token: true', req.session.accessToken);
-    return res.json(true);
-  } else {
-
-    console.log('authRouter: signin: token: false');
-    return res.json(false);
-  }
+authRouter.get('/login', authController.verify, (req, res) => {
+  // this will be called only if verify returns next()
+  res.send(true);
+}, (err, req, res, next) => {
+  // this will be called if verify does not return next()
+  console.log(err);
+  res.send(false);
 });
 
-authRouter.get('/ghLogin', authController.ghLogin);
+// if login^ returns true, this then gets called by the front end.
+authRouter.get('/login/gh', authController.loginGh);
 
 // Handle GitHub callback and exchange code for access token
 // this is the endpoint provided to github in the oauth setup.
 // that is, 'http://localhost:8080/api/auth/call'
-authRouter.get('/call', authController.handleGhCallback, authController.closeGhLogin);
+authRouter.get('/call', authController.handleGhCallback, authController.loginGhClose);
 
 authRouter.get('/verifyTokenTest', authController.verify, authController.verifyTokenTestPassed);
 
