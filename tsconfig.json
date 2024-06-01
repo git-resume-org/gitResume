@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "es5",
+      "target": "ES2020", // newer ECMA
       "lib": ["dom", "dom.iterable", "esnext", "es2015"],
       "allowJs": true,
       "skipLibCheck": true,
@@ -20,10 +20,10 @@
         }
       ],
       "paths": {
-        "@/*": ["./client/*"]
+        "@/*": ["./client/*"],
+        "@/server/*": ["./server/*"],
       }
     },
     "include": ["client/**/*"],
-    "exclude": ["node_modules", "build"]
+    "exclude": ["node_modules", "dist"]
   }
-  
