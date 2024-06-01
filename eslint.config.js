@@ -1,10 +1,7 @@
 import js from '@eslint/js';
 
-import { create as noProcess } from './custom-es-config.js';
-
 export default [
   js.configs.recommended,
-  // noProcess,
   {
     languageOptions: {
       globals: {
