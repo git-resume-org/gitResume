@@ -11,22 +11,19 @@ const ghClientSecret = process.env.GH_CLIENT_SECRET;
 // the controller to call to check if token exists
 authController.verify = async (req, res, next) => {
   if (req.session.accessToken) {
+    console.log('authController.verify: accessToken:', req.session.accessToken);
+    next();
 
-    console.log('authController: verify: accessToken already set', req.session.accessToken);
-    res.json(true);
-
-    return next();
   } else {
-
-    console.log('authController: verify: accessToken not set');
-    return res.json(false);
+    console.log('authController.verify: no accessToken');
+    res.json(false);
   }
 };
 
-authController.ghLogin = async (req, res, next) => {
-
+authController.loginGh = async (req, res, next) => {
+  // prompt=consent&
   try {
-    const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&redirect_uri=http://localhost:3000/api/auth/call&scope=user`;
+    const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
     res.redirect(redirectURI);
   } catch (error) {
     console.log(error);
@@ -80,23 +77,36 @@ authController.handleGhCallback = async (req, res, next) => {
   }
 };
 
-authController.closeGhLogin = (req, res, next) => {
-console.log('authController: closeGhLogin');
+authController.loginGhClose = (req, res, next) => {
+
+console.log('authController: loginGhClose');
+// next();
   res.send(`
     <script>
-      window.opener.postMessage('closeGhLogin', '${req.protocol}://${req.get('host')}');
+      window.opener.postMessage('loginGhClose', '${req.protocol}://${req.get('host')}');
       window.close();
     </script>
   `);
 
-  return next();
+  // return
 };
 
 authController.verifyTokenTestPassed = (req, res, next) => {
-  console.log('authController.verified: token verified. Routes protected.');
-  res.send('Verified');
-  return next();
+  console.log('authController.verified: token verified.');
+  // next();
+  res.send(true);
 }
+
+authController.ghLogout = async (req, res, next) => {
+  // prompt=consent&: // this prompts the reauthorization screen of github
+  try {
+    const redirectURI = `https://github.com/login/oauth/authorize?prompt=consent&scope=repo&client_id=${ghClientId}`;
+    res.redirect(redirectURI);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('An error occurred');
+  }
+};
 
 authController.error = (req, res, next) => {
   console.log('authController: error');
