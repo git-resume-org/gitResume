@@ -10,11 +10,11 @@ const VerifyTokenTestComp: React.FC = () => {
     const response = await fetch('/api/auth/verifyTokenTest');
     const data: boolean = await response.json();
     setTokenExists(data);
+
     setclickBool(true);
 
     if (!data) {
       console.log('Token does not exist');
-      console.log('data: ', data);
       return;
     }
 
