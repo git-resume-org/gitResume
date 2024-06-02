@@ -141,3 +141,5 @@ dist
 *.psql
 
 custom-es-config*
+
+data/user/*
