@@ -4,6 +4,7 @@ import session from 'express-session';
 import { config } from 'dotenv';
 
 import { authRouter } from './routes/authRouter.js';
+import { githubRouter } from './routes/githubRouter.js';
 
 config();
 const ghClientId = process.env.GH_CLIENT_ID;
@@ -12,6 +13,8 @@ const sessionSecret = process.env.SESSION_SECRET;
 
 const app = express();
 const PORT = 3000;
+
+app.use(express.json());
 
 // session middleware is used to store info about the user
 // in a 'session object' which is stored on the server
@@ -30,8 +33,22 @@ app.use(session({
 
 app.use('/api/auth/', authRouter);
 
+app.use('/api/github', githubRouter);
+
 app.get('/', (req, res) => {
   res.send('Home page');
+});
+
+// global error handler
+app.use((err, req, res, next) => {
+  const defaultErr = {
+    log: 'Express error handler caught unknown middleware error',
+    status: 500,
+    message: { err: 'An error occurred' }
+  };
+  const errorObj = Object.assign({}, defaultErr, err);
+  console.log(errorObj.log);
+  res.status(errorObj.status).json(errorObj.message);
 });
 
 app.listen(PORT, () => {
