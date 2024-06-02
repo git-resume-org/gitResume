@@ -1,10 +1,13 @@
 import React from 'react';
 import '../stylesheets/scss/styles.scss';
+import RepoComponent from '../components/RepoComponent';
+
 
 const RepoDisplay: React.FC = () => {
   return (
-    <div className="bg-black h-screen flex justify-center items-center">
-      <h1 className="text-white">Hello, World!</h1>
+    <div>
+      <h1>Repository comp</h1>
+      <RepoComponent/>
     </div>
   );
 };

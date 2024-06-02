@@ -4,8 +4,11 @@ import RepoDisplay from './RepoDisplay';
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="bg-black h-screen flex justify-center items-center">
-      <h1 className="text-white">Hello, Worldd!</h1>
+    <div className="bg-blackGR">
+      <h1 className="text-black">Hello, Worldd!</h1>
+      <div>
+        <RepoDisplay/>
+      </div>
     </div>
   );
 };
