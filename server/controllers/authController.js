@@ -16,14 +16,27 @@ const ghClientSecret = process.env.GH_CLIENT_SECRET;
 const secretKey = process.env.SECRET_KEY;
 
 // the controller to call to check if token exists
+
 authController.verify = async (req, res, next) => {
   // console.log('authController: verify');
   const token = req.cookies.token;
+  // console.log('authController.verify: token', token);
+
   if (!token) {
     console.log('authController.verify: no token');
     res.json(false);
   } else {
+    // decode the token (without verification) to quickly access its contents
+    const decoded = jwt.decode(token, { complete: true });
+
+    // access specific parts of the decoded token
+    const payload = decoded.payload; // the main content of the token
+    const header = decoded.header; // the header of the token
     console.log('authController.verify: token exists');
+
+    const usernameDecoded = payload.username;
+    const tokenDecoded = payload.token;
+    console.log('authController.verify: usernameDecoded', usernameDecoded);
     next();
   }
 };
@@ -81,7 +94,7 @@ authController.tokenGet = async (req, res, next) => {
       await getUserDataDetailed(accessToken, userDataBasic.login);
     }
 
-    const tokenPayload = { accessToken: accessToken, userDataBasic: userDataBasic, userAuth: true };
+    const tokenPayload = { accessToken: accessToken, userDataBasic: userDataBasic, userAuth: true, username: userDataBasic.login };
 
     const token = jwt.sign(tokenPayload, secretKey, { expiresIn: '30m' });
     res.cookie('token', token, {
@@ -121,15 +134,11 @@ authController.loginClose = (req, res, next) => {
 authController.verifyTokenTestPassed = (req, res, next) => {
   console.log('authController.verifyTokenTestPassed: token verified.');
   // const token = req.cookies.token;
-    // another example of storing user data in the cookie, this time after verifying the token
-    // jwt.verify(token, secretKey, (err, payload) => {
-    //   if (err) return res.sendStatus(403);
-    //   req.user = payload;
-    //   // next();
-    // });
-    // // next();
-    // res.send(req.user);
-    res.json(true);
+  // another example of storing user data in the cookie, this time after verifying the token
+
+  // // next();
+  // res.send(req.user);
+  res.json(true);
 }
 
 authController.tokenDelete = (req, res, next) => {
