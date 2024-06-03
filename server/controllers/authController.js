@@ -1,118 +1,68 @@
-import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import { config } from 'dotenv';
 import jwt from 'jsonwebtoken';
 
-import { getUserDataBasic, getUserDataDetailed } from '../services/githubService.js';
+import { getUserDataMeta, getUserDataMega } from '../services/githubService.js';
+import { tokenGet, loginGet } from '../services/authService.js';
 
 // set this to false if you don't want to get detailed user data.
-const getUserDataDetailedBool = true;
+const getUserDataMegaBool = false;
 
 const authController = {};
 
 config();
 
 const ghClientId = process.env.GH_CLIENT_ID;
-const ghClientSecret = process.env.GH_CLIENT_SECRET;
 const secretKey = process.env.SECRET_KEY;
 
 // the controller to call to check if token exists
 
 authController.verify = async (req, res, next) => {
   // console.log('authController: verify');
-  const token = req.cookies.token;
-  // console.log('authController.verify: token', token);
+  const user = req.cookies?.user;
 
-  if (!token) {
-    console.log('authController.verify: no token');
+  if (!user) {
+    console.log('authController.verify: ❌');
     res.json(false);
   } else {
     // decode the token (without verification) to quickly access its contents
-    const decoded = jwt.decode(token, { complete: true });
+    const decoded = jwt.decode(user, { complete: true });
 
     // access specific parts of the decoded token
     const payload = decoded.payload; // the main content of the token
     const header = decoded.header; // the header of the token
-    console.log('authController.verify: token exists');
-
-    const usernameDecoded = payload.username;
+    console.log('authController.verify: ✅');
     const tokenDecoded = payload.token;
-    console.log('authController.verify: usernameDecoded', usernameDecoded);
-    next();
-  }
-};
+    const usernameDecoded = payload.username;
 
-authController.login = async (req, res, next) => {
-  try {
-    const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
-    res.redirect(redirectURI);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('An error occurred');
+    // console.log('authController.verify: tokenDecoded', tokenDecoded);
+    // console.log('authController.verify: usernameDecoded', usernameDecoded);
+    next();
   }
 };
 
 // this is called after the user has authenticated
 authController.tokenGet = async (req, res, next) => {
-  // console.log('authController: handleCallback');
   try {
-    const { code } = req.query; // destructuring. same as const code = req.query.code;
-    if (!code) {
-      return res.status(400).send('Code not provided');
-    }
-
-    // console.log('authController: code retrieved from github oauth', code);
-    // the request to exchange the code for an access token
-    const response = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: ghClientId,
-        client_secret: ghClientSecret,
-        code,
-      }),
-    });
-
-    // a data object containing the access token
-    const data = await response.json();
-
-    // the access token from github
-    const accessToken = data.access_token;
-
-    if (!accessToken) {
+    const token = await tokenGet(req.query.code);
+    if (!token) {
       return res.status(400).send('accessToken not retrieved');
     }
 
-    const userDataBasic = await getUserDataBasic(accessToken);
-    if (userDataBasic) {
-      console.log('authController: user retrieved from github', userDataBasic.login);
+    console.log('token', token);
+
+    const userDataMeta = await getUserDataMeta(token);
+    if (userDataMeta) {
+      console.log('authController: user retrieved from github', userDataMeta.login);
     }
 
-    if (userDataBasic.login && getUserDataDetailedBool) {
-      await getUserDataDetailed(accessToken, userDataBasic.login);
+    if (userDataMeta.login && getUserDataMegaBool) {
+      await getUserDataMega(token, userDataMeta.login);
     }
 
-    const tokenPayload = { accessToken: accessToken, userDataBasic: userDataBasic, userAuth: true, username: userDataBasic.login };
-
-    const token = jwt.sign(tokenPayload, secretKey, { expiresIn: '30m' });
-    res.cookie('token', token, {
-      // if true, cookie is not accessible from javascript, only from the server. this is to prevent XSS attacks.
-      httpOnly: true,
-      // if true, cookies will only be transmitted over https. Use true when deploying to production
-      secure: false,
-      // 'strict': the cookie will only be sent in a request if the request is made from the same site origin.
-      // cookie added to example.com:
-      // req(example.com/site) === true
-      // req(blog.example.com) === false
-
-      // 'lax': the cookie will be sent in a request if the request is made from the same site origin or the first-party origin is a subdomain of the site origin.
-      // req(example.com/site) === true
-      // req(blog.example.com) === true
-      sameSite: 'strict',
-    });
-
+    const userPayload = { token: token, userDataMeta: userDataMeta, userAuth: true, username: userDataMeta.login };
+    // console.log('authController: userPayload', userPayload);
+    req.user = userPayload;
     next();
   } catch (error) {
     console.log(error);
@@ -120,19 +70,37 @@ authController.tokenGet = async (req, res, next) => {
   }
 }
 
-authController.loginClose = (req, res, next) => {
-  console.log('authController: loginGhClose');
-  // next();
-  res.send(`
+authController.cookiesSet = async (req, res, next) => {
+  console.log('authController: cookiesSet');
+  try {
+    const user = jwt.sign(req.user, secretKey, { expiresIn: '3m' });
+    res.cookie('user', user, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+    });
+
+    next();
+    res.send(`
     <script>
       window.opener.postMessage('loginGhClose', '${req.protocol}://${req.get('host')}');
       window.close();
     </script>
   `);
-};
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('An error occurred');
+  }
+}
 
-authController.verifyTokenTestPassed = (req, res, next) => {
-  console.log('authController.verifyTokenTestPassed: token verified.');
+// authController.loginClose = (req, res, next) => {
+//   console.log('authController: loginGhClose');
+//   // next();
+
+// };
+
+authController.verifyTest = (req, res, next) => {
+  // console.log('authController.verifyTest: token verified.');
   // const token = req.cookies.token;
   // another example of storing user data in the cookie, this time after verifying the token
 
@@ -141,9 +109,16 @@ authController.verifyTokenTestPassed = (req, res, next) => {
   res.json(true);
 }
 
-authController.tokenDelete = (req, res, next) => {
-  console.log('authController: tokenDelete');
-  res.clearCookie('token');
+authController.cookiesClear = (req, res, next) => {
+  console.log('authController: cookieClear');
+  // res.clearCookie('token');
+
+  if (req.cookies) {
+    Object.keys(req.cookies).forEach(cookieName => {
+      res.clearCookie(cookieName);
+    });
+  }
+
   next();
 };
 

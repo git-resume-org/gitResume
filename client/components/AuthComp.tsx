@@ -1,6 +1,8 @@
 import React from 'react';
 import { useEffect } from 'react';
 
+const ghClientId = process.env.REACT_APP_GH_CLIENT_ID;
+
 const AuthComp: React.FC = () => {
   let authWindow: Window | null;
 
@@ -9,12 +11,17 @@ const AuthComp: React.FC = () => {
     const tokenBool: boolean = await response.json();
 
     if (!tokenBool) {
+      console.log('authController: Failed to get token');
+      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
       // if window is full screen, open in a new window, which is to say a new tab bc fullscreen.
       if (window.matchMedia('(display-mode: fullscreen)').matches) {
-        authWindow = window.open('/api/auth/login/gh', '_blank');
+        authWindow = window.open(redirectURI, '_blank');
+        // second parameter is the name of the window.
+        // _blank means that the URL should be loaded into a new window.
       } else {
         // otherwise pop up
-        authWindow = window.open('/api/auth/login/gh', '_blank', 'width=800,height=600,,toolbar=no,scrollbars=no,status=no,resizable=no,location=no,menuBar=no,left=500,top=100');
+        authWindow = window.open(redirectURI, '_blank', 'width=800,height=600,,toolbar=no,scrollbars=no,status=no,resizable=no,location=no,menuBar=no,left=500,top=100');
+        // third parameter is the properties of the window. This creates a popup window.
       }
 
       return;

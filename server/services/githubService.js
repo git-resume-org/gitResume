@@ -2,9 +2,9 @@ import fetch from 'node-fetch';
 import { writeFileSync, mkdir } from 'node:fs';
 
 // set this to false if you dont want to write said data to files. (we're only doing this with our own data.)
-const writeFSUserDataDetailedBool = true;
+const writeFSUserDataMegaBool = true;
 
-const getUserDataDetailed = async (token, username) => {
+const getUserDataMega = async (token, username) => {
   mkdir((new URL('../../data/user/', import.meta.url)), { recursive: true }, (err) => {
     if (err) throw err;
   });
@@ -32,7 +32,7 @@ const getUserDataDetailed = async (token, username) => {
     }
     const ghData = await response.json();
 
-    if (writeFSUserDataDetailedBool) {
+    if (writeFSUserDataMegaBool) {
       writeFileSync(`./data/user/${key}`, JSON.stringify(ghData, null, 2));
     }
   }
@@ -49,12 +49,12 @@ const getUserDataDetailed = async (token, username) => {
 
 };
 
-const getUserDataBasic = async (accessToken) => {
-  // console.log('authController: getUserInfo: accessToken', accessToken);
+const getUserDataMeta = async (token) => {
+  // console.log('authController: getUserDataMeta: token', token);
   const response = await fetch('https://api.github.com/user', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
       Accept: 'application/json',
     },
   });
@@ -74,4 +74,4 @@ const getUserDataBasic = async (accessToken) => {
   return userData;
 }
 
-export { getUserDataBasic, getUserDataDetailed };
+export { getUserDataMeta, getUserDataMega };

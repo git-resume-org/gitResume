@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthComp } from '../components/AuthComp';
-import { VerifyTokenTestComp } from '../components/VerifyTokenTestComp';
+import { VerifyTestComp } from '../components/VerifyTestComp';
 
 const LandingPage: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ const LandingPage: React.FC = () => {
           <br/>
           <hr/>
           <br/>
-          <VerifyTokenTestComp />
+          <VerifyTestComp />
         </div>
       </div>
   );
