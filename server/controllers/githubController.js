@@ -16,8 +16,8 @@ const githubController = {};
 // create an instance of octokit (octokit is used to interact with the GitHub REST API in JS scripts)
 githubController.connectOctokit = (req, res, next) => {
   // check for missing data
-  // console.log('CONNECT OCTOKIT: TOKEN:   ', req.cookies.user.token);
-  // if (!req.cookies.user.token) return next(createErr({
+  // console.log('CONNECT OCTOKIT: TOKEN:   ', req.user.token);
+  // if (!req.user.token) return next(createErr({
   //   method: 'connectOctokit',
   //   type: 'receiving token data',
   //   err: 'Invalid data received'
