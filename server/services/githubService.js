@@ -39,7 +39,7 @@ const getUserDataMega = async (token, username) => {
 
   for (let [key, value] of Object.entries(ghApiEndpoints)) {
     try {
-      console.log('authController: getGhData:', key, value);
+      console.log('authC: getGhData:', key, value);
       await fetchData(key, value);
 
     } catch (err) {
@@ -50,7 +50,7 @@ const getUserDataMega = async (token, username) => {
 };
 
 const getUserDataMeta = async (token) => {
-  // console.log('authController: getUserDataMeta: token', token);
+  // console.log('authC: getUserDataMeta: token', token);
   const response = await fetch('https://api.github.com/user', {
     method: 'GET',
     headers: {
@@ -70,7 +70,7 @@ const getUserDataMeta = async (token) => {
   });
 
   writeFileSync(`./data/user/info`, JSON.stringify(userData, null, 2));
-  // console.log('authController: getUserInfo: userData', userData);
+  // console.log('authC: getUserInfo: userData', userData);
   return userData;
 }
 

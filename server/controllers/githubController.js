@@ -22,18 +22,9 @@ githubController.connectOctokit = (req, res, next) => {
   //   type: 'receiving token data',
   //   err: 'Invalid data received'
   // }));
-    const decodedJwt = jwt.decode(user, { complete: true });
-
-    // access specific parts of the decoded token
-    const payload = decodedJwt.payload; // the main content of the token
-    const header = decodedJwt.header; // the header of the token
-    console.log('authController.verify: token exists');
-
-    const tokenDecoded = payload.token;
-    const usernameDecoded = payload.username;
 
   const octokit = new Octokit({
-    auth: req.cookies.user.token
+    auth: req.user.token
   });
   res.locals.octokit = octokit;
   next();
@@ -42,6 +33,8 @@ githubController.connectOctokit = (req, res, next) => {
 // gets the list of all commits for a particular repo for a particular author
 githubController.getCommits = async (req, res, next) => {
   const { owner, repoName } = req.body;
+
+  console.log('GET COMMITS: owner', owner, 'repoName', repoName);
 
   // check for missing data
   if (!owner || !repoName) return next(createErr({

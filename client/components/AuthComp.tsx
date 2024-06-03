@@ -11,7 +11,7 @@ const AuthComp: React.FC = () => {
     const tokenBool: boolean = await response.json();
 
     if (!tokenBool) {
-      console.log('authController: Failed to get token');
+      console.log('authC: No token present. Redirecting to github login...');
       const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
       // if window is full screen, open in a new window, which is to say a new tab bc fullscreen.
       if (window.matchMedia('(display-mode: fullscreen)').matches) {
@@ -37,7 +37,7 @@ const AuthComp: React.FC = () => {
   }, []);
 
   const handleMessage = (event: MessageEvent) => {
-    // the value of event.data is set in authController.closeGhLogin
+    // the value of event.data is set in authC.closeGhLogin
     if (event.origin === window.location.origin && event.data === 'closeGhLogin') {
       console.log('Authorization complete');
 

@@ -3,12 +3,12 @@ import { config } from 'dotenv';
 import jwt from 'jsonwebtoken';
 
 import { getUserDataMeta, getUserDataMega } from '../services/githubService.js';
-import { tokenGet, loginGet } from '../services/authService.js';
+import { tokenGet } from '../services/authService.js';
 
 // set this to false if you don't want to get detailed user data.
 const getUserDataMegaBool = false;
 
-const authController = {};
+const authC = {};
 
 config();
 
@@ -17,32 +17,51 @@ const secretKey = process.env.SECRET_KEY;
 
 // the controller to call to check if token exists
 
-authController.verify = async (req, res, next) => {
-  // console.log('authController: verify');
+authC.verify = async (req, res, next) => {
+  // console.log('authC: verify');
   const user = req.cookies?.user;
 
   if (!user) {
-    console.log('authController.verify: ❌');
-    res.json(false);
+    console.log('authC.verify: ❌');
+    console.log('authC.verify: path', req.path);
+    return req.path === '/login' ? res.json(false) : res.status(401).json({ error: 'Unauthorized: No token provided' })
   } else {
     // decode the token (without verification) to quickly access its contents
-    const decoded = jwt.decode(user, { complete: true });
+    const decodedJwt = jwt.decode(user, { complete: true });
 
-    // access specific parts of the decoded token
-    const payload = decoded.payload; // the main content of the token
-    const header = decoded.header; // the header of the token
-    console.log('authController.verify: ✅');
-    const tokenDecoded = payload.token;
-    const usernameDecoded = payload.username;
+      // access specific parts of the decoded token
+      const payload = decodedJwt.payload; // the main content of the token
+      const header = decodedJwt.header; // the header of the token
+      console.log('authC.verify: ✅');
+      const tokenDecoded = payload.token;
+      const usernameDecoded = payload.username;
 
-    // console.log('authController.verify: tokenDecoded', tokenDecoded);
-    // console.log('authController.verify: usernameDecoded', usernameDecoded);
-    next();
+      // console.log('authC.verify: tokenDecoded', tokenDecoded);
+      // console.log('authC.verify: usernameDecoded', usernameDecoded);
+
+    jwt.verify(user, secretKey, (err, verifiedPayload) => {
+      if (err) {
+        if (err.name === 'TokenExpiredError') {
+          console.log('authC.verify: ❌ Token expired');
+          return req.path === '/login' ? res.json(false) : res.status(401).json({ error: 'Unauthorized: Token expired' });
+        }
+        console.log('authC.verify: ❌ Token verification failed', err);
+        return req.path === '/login' ? res.json(false) : res.status(403).json({ error: 'Forbidden: Token verification failed' });
+      }
+
+      verifiedPayload.username = usernameDecoded;
+      verifiedPayload.token = tokenDecoded;
+
+      // console.log('authC.verify: verifiedPayload', verifiedPayload);
+      req.user = verifiedPayload;
+
+      next();
+    });
   }
 };
 
 // this is called after the user has authenticated
-authController.tokenGet = async (req, res, next) => {
+authC.tokenGet = async (req, res, next) => {
   try {
     const token = await tokenGet(req.query.code);
     if (!token) {
@@ -53,7 +72,7 @@ authController.tokenGet = async (req, res, next) => {
 
     const userDataMeta = await getUserDataMeta(token);
     if (userDataMeta) {
-      console.log('authController: user retrieved from github', userDataMeta.login);
+      console.log('authC: user retrieved from github', userDataMeta.login);
     }
 
     if (userDataMeta.login && getUserDataMegaBool) {
@@ -61,7 +80,7 @@ authController.tokenGet = async (req, res, next) => {
     }
 
     const userPayload = { token: token, userDataMeta: userDataMeta, userAuth: true, username: userDataMeta.login };
-    // console.log('authController: userPayload', userPayload);
+    // console.log('authC: userPayload', userPayload);
     req.user = userPayload;
     next();
   } catch (error) {
@@ -70,10 +89,10 @@ authController.tokenGet = async (req, res, next) => {
   }
 }
 
-authController.cookiesSet = async (req, res, next) => {
-  console.log('authController: cookiesSet');
+authC.cookiesSet = async (req, res, next) => {
+  console.log('authC: cookiesSet');
   try {
-    const user = jwt.sign(req.user, secretKey, { expiresIn: '3m' });
+    const user = jwt.sign(req.user, secretKey, { expiresIn: '30d' });
     res.cookie('user', user, {
       httpOnly: true,
       secure: false,
@@ -93,14 +112,8 @@ authController.cookiesSet = async (req, res, next) => {
   }
 }
 
-// authController.loginClose = (req, res, next) => {
-//   console.log('authController: loginGhClose');
-//   // next();
-
-// };
-
-authController.verifyTest = (req, res, next) => {
-  // console.log('authController.verifyTest: token verified.');
+authC.verifyTest = (req, res, next) => {
+  // console.log('authC.verifyTest: token verified.');
   // const token = req.cookies.token;
   // another example of storing user data in the cookie, this time after verifying the token
 
@@ -109,8 +122,8 @@ authController.verifyTest = (req, res, next) => {
   res.json(true);
 }
 
-authController.cookiesClear = (req, res, next) => {
-  console.log('authController: cookieClear');
+authC.cookiesClear = (req, res, next) => {
+  console.log('authC: cookieClear');
   // res.clearCookie('token');
 
   if (req.cookies) {
@@ -122,7 +135,7 @@ authController.cookiesClear = (req, res, next) => {
   next();
 };
 
-authController.logout = async (req, res, next) => {
+authC.logout = async (req, res, next) => {
   try {
     const redirectURI = `https://github.com/login/oauth/authorize?prompt=consent&scope=repo&client_id=${ghClientId}`;
     res.redirect(redirectURI);
@@ -134,9 +147,9 @@ authController.logout = async (req, res, next) => {
 };
 
 
-authController.error = (req, res, next) => {
-  console.log('authController: error');
+authC.error = (req, res, next) => {
+  console.log('authC: error');
   res.send('Error');
 };
 
-export { authController };
+export { authC };
