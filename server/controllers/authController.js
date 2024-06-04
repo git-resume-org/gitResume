@@ -6,7 +6,7 @@ import { getUserDataMeta, getUserDataMega } from '../services/githubService.js';
 import { tokenGet } from '../services/authService.js';
 
 // set this to false if you don't want to get detailed user data.
-const getUserDataMegaBool = false;
+const getUserDataMegaBool = true;
 
 const authC = {};
 
@@ -23,21 +23,20 @@ authC.verify = async (req, res, next) => {
 
   if (!user) {
     console.log('authC.verify: ❌');
-    console.log('authC.verify: path', req.path);
     return req.path === '/login' ? res.json(false) : res.status(401).json({ error: 'Unauthorized: No token provided' })
   } else {
     // decode the token (without verification) to quickly access its contents
     const decodedJwt = jwt.decode(user, { complete: true });
 
-      // access specific parts of the decoded token
-      const payload = decodedJwt.payload; // the main content of the token
-      const header = decodedJwt.header; // the header of the token
-      console.log('authC.verify: ✅');
-      const tokenDecoded = payload.token;
-      const usernameDecoded = payload.username;
+    // access specific parts of the decoded token
+    const payload = decodedJwt.payload; // the main content of the token
+    const header = decodedJwt.header; // the header of the token
+    console.log('authC.verify: ✅');
+    const tokenDecoded = payload.token;
+    const usernameDecoded = payload.username;
 
-      // console.log('authC.verify: tokenDecoded', tokenDecoded);
-      // console.log('authC.verify: usernameDecoded', usernameDecoded);
+    // console.log('authC.verify: tokenDecoded', tokenDecoded);
+    // console.log('authC.verify: usernameDecoded', usernameDecoded);
 
     jwt.verify(user, secretKey, (err, verifiedPayload) => {
       if (err) {
@@ -100,12 +99,15 @@ authC.cookiesSet = async (req, res, next) => {
     });
 
     next();
+
+    console.log('authC: cookiesSet: about to close window');
+
     res.send(`
     <script>
-      window.opener.postMessage('loginGhClose', '${req.protocol}://${req.get('host')}');
-      window.close();
+    window.opener.postMessage('loginGhClose', '${req.protocol}://${req.get('host')}');
+    window.close();
     </script>
-  `);
+    `);
   } catch (error) {
     console.log(error);
     res.status(500).send('An error occurred');

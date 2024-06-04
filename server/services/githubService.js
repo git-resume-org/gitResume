@@ -13,13 +13,16 @@ const getUserDataMega = async (token, username) => {
     subscriptions: 'subscriptions',
     received_events: 'received_events',
     events: 'events',
-    orgs: 'orgs',  // not returning anything for Keith atm
-    repos: 'repos',  // not returning anything for Keith atm
-    gists: 'gists', // not returning anything for Keith atm
+    orgs: `orgs`,  // not returning anything for Keith atm
+    repos: `https://api.github.com/search/repositories?q=user:${username}`,  // the correct endpoint for getting both public and private repos for the user
   };
 
   const fetchData = async (key, value) => {
-    const url = `https://api.github.com/users/${username}/${value}`
+    let url = `https://api.github.com/users/${username}/${value}`
+    if (key === 'repos'){
+      url = value
+    }
+    console.log('authC: fetchData: url', url);
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -46,7 +49,6 @@ const getUserDataMega = async (token, username) => {
       console.log(err);
     }
   }
-
 };
 
 const getUserDataMeta = async (token) => {

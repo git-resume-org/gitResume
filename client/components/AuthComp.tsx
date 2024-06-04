@@ -12,7 +12,7 @@ const AuthComp: React.FC = () => {
 
     if (!tokenBool) {
       console.log('authC: No token present. Redirecting to github login...');
-      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
+      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
       // if window is full screen, open in a new window, which is to say a new tab bc fullscreen.
       if (window.matchMedia('(display-mode: fullscreen)').matches) {
         authWindow = window.open(redirectURI, '_blank');
@@ -37,16 +37,8 @@ const AuthComp: React.FC = () => {
   }, []);
 
   const handleMessage = (event: MessageEvent) => {
-    // the value of event.data is set in authC.closeGhLogin
-    if (event.origin === window.location.origin && event.data === 'closeGhLogin') {
-      console.log('Authorization complete');
-
-      if (authWindow) {
-        // Close the login window
-        authWindow.close();
-        authWindow = null;
-      }
-    }
+    // seems the contents of this have no bearing on the window closing. completely handled by authC.cookiesGet.
+    // in case this breaks in the future, look to commit 9790a1d for the code that used to be here.
   };
 
   return (
