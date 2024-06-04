@@ -26,8 +26,8 @@ const LandingPage: React.FC = () => {
         <h2 className='text-blueGR z-20 relative align-text-top left-4 text-5xl py-1'> from your git commit history,</h2>
         <h3 className='text-greenGR z-20 relative align-text-top left-4 text-5xl py-1'> in a few clicks. </h3>
       </div>
-      <AuthComp />
-      <VerifyTokenTestComp />
+      {/* <AuthComp />
+      <VerifyTokenTestComp /> */}
     </div>
   );
 };

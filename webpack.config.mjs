@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import StyleLintPlugin from 'stylelint-webpack-plugin';
-
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
@@ -11,10 +11,6 @@ config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const StyleLintPlugin = require('stylelint-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 

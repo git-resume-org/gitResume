@@ -2,83 +2,83 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-body {
-  @apply flex flex-col min-h-screen bg-gradient-to-b from-blue-400 to-indigo-600;
-  vertical-align: middle;
-  align-items: center;
-  width: 100vw;
-}
+// body {
+//   @apply flex flex-col min-h-screen bg-gradient-to-b from-blue-400 to-indigo-600;
+//   vertical-align: middle;
+//   align-items: center;
+//   width: 100vw;
+// }
 
-.entry {
-  @apply max-w-md w-full bg-white shadow-lg rounded-lg p-8;
-}
+// .entry {
+//   @apply max-w-md w-full bg-white shadow-lg rounded-lg p-8;
+// }
 
-h1 {
-  @apply text-3xl font-semibold mb-6;
-}
+// h1 {
+//   @apply text-3xl font-semibold mb-6;
+// }
 
-p {
-  @apply text-gray-600 mb-6;
-}
+// p {
+//   @apply text-gray-600 mb-6;
+// }
 
-.btn {
+// .btn {
 
 
-  @apply bg-indigo-700 hover:bg-indigo-900 text-blue-300 px-4 py-0 rounded-md;
-}
+//   @apply bg-indigo-700 hover:bg-indigo-900 text-blue-300 px-4 py-0 rounded-md;
+// }
 
-html {
-  scroll-behavior: smooth;
-}
+// html {
+//   scroll-behavior: smooth;
+// }
 
-.documentation {
-  max-width: 1150px;
-  margin: 0 auto;
-}
+// .documentation {
+//   max-width: 1150px;
+//   margin: 0 auto;
+// }
 
-.section {
-  margin-top: 40px;
-}
+// .section {
+//   margin-top: 40px;
+// }
 
-.section h2 {
-  color: #ffffff;
-  font-size: 24px;
-  margin-bottom: 10px;
-}
+// .section h2 {
+//   color: #ffffff;
+//   font-size: 24px;
+//   margin-bottom: 10px;
+// }
 
-.section p {
-  margin-top: 5px;
-  color: #ffffff;
-}
+// .section p {
+//   margin-top: 5px;
+//   color: #ffffff;
+// }
 
-code {
-  text-align: left;
-  padding: 10px 30px !important;
-  border-radius: 10px;
-  position: relative;
+// code {
+//   text-align: left;
+//   padding: 10px 30px !important;
+//   border-radius: 10px;
+//   position: relative;
 
-  &::after {
-    content: "SCSS";
-    padding: 3px 5px 2px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #383d49;
-    border-bottom-left-radius: 10px;
-  }
-}
+//   &::after {
+//     content: "SCSS";
+//     padding: 3px 5px 2px;
+//     position: absolute;
+//     top: 0;
+//     right: 0;
+//     background: #383d49;
+//     border-bottom-left-radius: 10px;
+//   }
+// }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 10px 0;
-  gap: 10px;
-}
+// .nav {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   padding: 10px 0;
+//   gap: 10px;
+// }
 
-.nav a {
-  color: #ffffff;
-  margin: 0 10px;
-  font-weight: bold;
-  text-decoration: underline;
-}
+// .nav a {
+//   color: #ffffff;
+//   margin: 0 10px;
+//   font-weight: bold;
+//   text-decoration: underline;
+// }
