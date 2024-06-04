@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 
@@ -54,6 +55,9 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name][ext]', // Output to correct directory
+        },
       },
     ],
   },
@@ -71,6 +75,12 @@ module.exports = {
       files: 'client/**/**/*.scss',
       failOnError: true,
       quiet: true,
+    }),
+    // server static files (to render images)
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, 'client/assets'), to: 'assets' },
+      ],
     }),
   ],
 };

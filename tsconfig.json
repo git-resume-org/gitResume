@@ -23,7 +23,7 @@
         "@/*": ["./client/*"]
       }
     },
-    "include": ["client/**/*"],
+    "include": ["client/**/*", "public/**/*"],
     "exclude": ["node_modules", "build"]
   }
   
