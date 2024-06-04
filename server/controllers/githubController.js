@@ -1,4 +1,5 @@
 import { Octokit } from 'octokit';
+import jwt from 'jsonwebtoken';
 
 // helper function to create fileController error objects
 // return value will be the object we pass into next, invoking global error handler
@@ -15,15 +16,15 @@ const githubController = {};
 // create an instance of octokit (octokit is used to interact with the GitHub REST API in JS scripts)
 githubController.connectOctokit = (req, res, next) => {
   // check for missing data
-  // console.log('CONNECT OCTOKIT: ACCESS TOKEN:   ', req.session.accessToken);
-  // if (!req.session.accessToken) return next(createErr({
+  // console.log('CONNECT OCTOKIT: TOKEN:   ', req.user.token);
+  // if (!req.user.token) return next(createErr({
   //   method: 'connectOctokit',
-  //   type: 'receiving accessToken data',
+  //   type: 'receiving token data',
   //   err: 'Invalid data received'
   // }));
 
   const octokit = new Octokit({
-    auth: req.session.accessToken
+    auth: req.user.token
   });
   res.locals.octokit = octokit;
   next();
@@ -32,6 +33,8 @@ githubController.connectOctokit = (req, res, next) => {
 // gets the list of all commits for a particular repo for a particular author
 githubController.getCommits = async (req, res, next) => {
   const { owner, repoName } = req.body;
+
+  console.log('GET COMMITS: owner', owner, 'repoName', repoName);
 
   // check for missing data
   if (!owner || !repoName) return next(createErr({
@@ -49,7 +52,7 @@ githubController.getCommits = async (req, res, next) => {
         ref: commitSha,
         headers: {
           "content-type": 'application/vnd.github.diff',
-          "Accept": 'application/vnd.github+json' 
+          "Accept": 'application/vnd.github+json'
         }
       });
       return gitCommitDiffs.data.files.map(file => ({
@@ -79,10 +82,10 @@ githubController.getCommits = async (req, res, next) => {
 
     // remove all commit messages starting from "Merge", as these are automatic merge commits
     const validCommits = gitCommits.data.filter(cmt => !cmt.commit.message.includes("Merge", 0));
-  
+
     const commitPromises = validCommits.map(cmt => {
       // Step 1. getCommitCode is an async func, so it returns a Promise #1
-      // Step 4. eventually we return Promise #2 to the mapped array 
+      // Step 4. eventually we return Promise #2 to the mapped array
       return getCommitCode(owner, repoName, cmt.sha)
         // Step 2. the Promise #1 returned from getCommitCode resolves with an array of file objects
         .then(files => {

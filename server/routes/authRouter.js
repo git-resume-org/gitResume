@@ -1,9 +1,9 @@
 import express from 'express';
-import { authController } from '../controllers/authController.js';
+import { authC } from '../controllers/authController.js';
 
 const authRouter = express.Router();
 
-authRouter.get('/login', authController.verify, (req, res) => {
+authRouter.get('/login', authC.verify, (req, res) => {
   // this will be called only if verify returns next()
   res.send(true);
 }, (err, req, res, next) => {
@@ -12,14 +12,16 @@ authRouter.get('/login', authController.verify, (req, res) => {
   res.send(false);
 });
 
-// if login^ returns true, this then gets called by the front end.
-authRouter.get('/login/gh', authController.loginGh);
 
 // Handle GitHub callback and exchange code for access token
 // this is the endpoint provided to github in the oauth setup.
 // that is, 'http://localhost:8080/api/auth/call'
-authRouter.get('/call', authController.handleGhCallback, authController.loginGhClose);
+authRouter.get('/call', authC.tokenGet, authC.cookiesSet);
 
-authRouter.get('/verifyTokenTest', authController.verify, authController.verifyTokenTestPassed);
+authRouter.get('/verifyTest', authC.verify, authC.verifyTest);
+
+// logout
+// not yet implemented on the front end
+authRouter.get('/logout', authC.cookiesClear, authC.logout);
 
 export { authRouter };
