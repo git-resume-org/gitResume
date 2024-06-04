@@ -1,5 +1,5 @@
-module.exports = {
-  purge: ['./client/**/*.{js,jsx,ts,tsx}', './client/**/*.html'],
+export default {
+  purge: ['./client/**/*.{html,js,jsx,ts,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -25,4 +25,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};
