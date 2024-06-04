@@ -5,7 +5,7 @@ import RepoDisplay from './pages/RepoDisplay';
 
 const App: React.FC = () => {
   return (
-    <div>
+    <div className="bg-blackGR h-screen top-0 z-0">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/repodisplay" element={<RepoDisplay />} />

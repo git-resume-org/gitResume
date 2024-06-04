@@ -12,8 +12,12 @@ module.exports = {
         blueGR: '#62afe6',
         lavenderGR: '#c4b0fc',
         blackGR: '#010102',
-        greyGR: '#1E1C28'
+        greyGR: '#1E1C28',
+        darkGrayGR: '#202020',
       },
+      fontFamily: {
+        sans: ['Montserrat', 'sans-serif']
+      }
     },
   },
   variants: {
