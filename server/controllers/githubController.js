@@ -1,5 +1,14 @@
 import { Octokit } from 'octokit';
 import jwt from 'jsonwebtoken';
+import { writeFileSync, mkdir } from 'node:fs';
+import { chatCompletion } from '../services/openaiService.js';
+
+// set this to false if you dont want to write said data to files. (we're only doing this with our own data, during development.)
+const writeFSUserCommitsToRepoBool = true;
+
+// leave this false for now, until more progress is made on this.
+// an error will be returned right now anyway, as calling openai requires specific org, project, and api keys in one's .env file.
+const sendToOpenAIBool = false;
 
 // helper function to create fileController error objects
 // return value will be the object we pass into next, invoking global error handler
@@ -112,9 +121,27 @@ githubController.getCommits = async (req, res, next) => {
         });
     });
 
+
     // Promise.all allows to process async requests for commit details in parallel, which helps to reduce time of processing for a large number of commits
     const commits = await Promise.all(commitPromises);
     res.locals.commits = commits;
+
+
+
+    if (writeFSUserCommitsToRepoBool){
+      mkdir((new URL('../../data/commits', import.meta.url)), { recursive: true }, (err) => {
+        if (err) throw err;
+      });
+      writeFileSync(`./data/commits/${owner}_${repoName}_commits.json`, JSON.stringify(commits, null, 2));
+
+    }
+
+    if (sendToOpenAIBool){
+      const openaiCommits0Completion = await chatCompletion(owner, repoName, commits[0].commitSha, commits[0].files);
+
+      writeFileSync(`./data/commits/${owner}_${repoName}_commits0_openai_bulletPoints.json`, JSON.stringify(openaiCommits0Completion, null, 2));
+    }
+
     next();
   } catch (err) {
       return next(createErr({

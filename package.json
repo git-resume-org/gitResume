@@ -92,6 +92,7 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
-    "octokit": "^4.0.2"
+    "octokit": "^4.0.2",
+    "openai": "^4.47.3"
   }
 }

@@ -142,4 +142,4 @@ dist
 
 custom-es-config*
 
-data/user/*
+data/**/*
