@@ -140,5 +140,4 @@ dist
 *.sql
 *.psql
 
-# package-lock
-package.lock.json
+custom-es-config*

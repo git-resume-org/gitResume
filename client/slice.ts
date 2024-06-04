@@ -12,5 +12,4 @@ const sampleSlice = createSlice({
   }
 });
 
-
 export default sampleSlice.reducer;

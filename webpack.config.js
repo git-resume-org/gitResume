@@ -1,3 +1,16 @@
+import webpack from 'webpack';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import StyleLintPlugin from 'stylelint-webpack-plugin';
+
+import { fileURLToPath } from 'url';
+import { config } from 'dotenv';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+
+config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
@@ -5,7 +18,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 
-module.exports = {
+export default {
   mode: devMode ? 'development' : 'production',
   entry: {
     bundle: path.resolve(__dirname, 'client/index.tsx'), // The entry point for our application.
@@ -20,12 +33,17 @@ module.exports = {
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'), // Serve static files from the "dist" directory.
-      publicPath: "/",
+      publicPath: '/',
     },
-    compress: false, // if true, compresses assets to speed up server responses.
-    port: 3000, // Port number for the development server.
-    hot: true,
-    historyApiFallback: true,
+    compress: false, // If true, compresses assets to speed up server responses
+    port: 8080, // Port number for the development server
+    hot: true, // Enable hot module replacement,
+    proxy: [{
+      context: '/api',
+      target: 'http://localhost:3000',
+      secure: false,
+      changeOrigin: true,
+    }],
   },
   module: {
     rules: [
@@ -38,19 +56,14 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
+            presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
           },
         },
-      },
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -82,5 +95,6 @@ module.exports = {
         { from: path.resolve(__dirname, 'client/assets'), to: 'assets' },
       ],
     }),
+    new ForkTsCheckerWebpackPlugin(),
   ],
 };
