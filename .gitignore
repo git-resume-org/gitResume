@@ -139,3 +139,6 @@ dist
 *.log
 *.sql
 *.psql
+
+# package-lock
+package.lock.json
