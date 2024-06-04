@@ -35,7 +35,8 @@
     }
   },
   "include": [
-    "client/**/*"
+    "client/**/*",
+    "public/**/*"
   ],
   "exclude": [
     "node_modules",
