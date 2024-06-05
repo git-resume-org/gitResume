@@ -31,7 +31,7 @@ const VerifyTestComp: React.FC = () => {
 
   const handleClickGetCommits = async (): Promise<void> => {
 
-    const response = await fetch('/api/github/commits', {
+    const response = await fetch('/api/github/ghData', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const VerifyTestComp: React.FC = () => {
         <br />
         <button className="btn" style={{ fontSize: '1.5rem', marginTop: '.25rem', marginLeft: 'auto', marginRight: 'auto', display: 'block', width: '100%' }}
           onClick={handleClickGetCommits}
-        >get commits</button>
+        >get data</button>
       </div>
     </div>
   );

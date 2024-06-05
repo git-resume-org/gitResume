@@ -27,8 +27,18 @@ const chatCompletion = async (owner, repoName, commitSha, files) => {
       model: 'gpt-3.5-turbo',
       messages: [
         {
-          role: 'system',
-          content: `Evaluate the diff of the following files: ${files.map(file => file.filename).join(', ')}. Return 1-5 technical resume bullet points explaining what changes were made, in JSON format.`
+          // role: 'system',
+          // content: `Evaluate the diff of the following files: ${files.map(file => file.filename).join(', ')}. Return 1-5 technical resume bullet points explaining what changes were made, in JSON format.`
+
+            // content: files.flatMap(file => file.diff.split('\ndiff --git ').map((diff, i) => {
+            //   const filename = file.filename.split(' ')[0];
+            //   if (i === 0) {
+            //     return `Evaluate the following diff of the file ${filename}. Return 1-5 technical resume bullet points explaining what changes were made, in JSON format.`;
+            //   } else {
+            //     return `--- ${filename}\n${diff}`;
+            //   }
+            // })).join('\n\n')
+
         },
         {
           role: 'user',

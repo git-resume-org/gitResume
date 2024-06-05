@@ -2,11 +2,8 @@ import fetch from 'node-fetch';
 import { config } from 'dotenv';
 import jwt from 'jsonwebtoken';
 
-import { getUserDataMeta, getUserDataMega } from '../services/githubService.js';
-import { tokenGet } from '../services/authService.js';
-
-// set this to false if you don't want to get detailed user data.
-const getUserDataMegaBool = true;
+import { ghService } from '../services/githubService.js';
+import { authService } from '../services/authService.js';
 
 const authC = {};
 
@@ -35,7 +32,7 @@ authC.verify = async (req, res, next) => {
     const tokenDecoded = payload.token;
     const usernameDecoded = payload.username;
 
-    // console.log('authC.verify: tokenDecoded', tokenDecoded);
+    console.log('authC.verify: tokenDecoded', tokenDecoded);
     // console.log('authC.verify: usernameDecoded', usernameDecoded);
 
     jwt.verify(user, secretKey, (err, verifiedPayload) => {
@@ -62,20 +59,16 @@ authC.verify = async (req, res, next) => {
 // this is called after the user has authenticated
 authC.tokenGet = async (req, res, next) => {
   try {
-    const token = await tokenGet(req.query.code);
+    const token = await authService.tokenGet(req.query.code);
     if (!token) {
       return res.status(400).send('accessToken not retrieved');
     }
 
     console.log('token', token);
 
-    const userDataMeta = await getUserDataMeta(token);
+    const userDataMeta = await ghService.getUserDataMeta(token);
     if (userDataMeta) {
       console.log('authC: user retrieved from github', userDataMeta.login);
-    }
-
-    if (userDataMeta.login && getUserDataMegaBool) {
-      await getUserDataMega(token, userDataMeta.login);
     }
 
     const userPayload = { token: token, userDataMeta: userDataMeta, userAuth: true, username: userDataMeta.login };
