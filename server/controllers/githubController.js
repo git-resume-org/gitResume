@@ -197,16 +197,18 @@ githubController.getUserDataMega = async (req, res, next) => {
   const { token, username } = req.user;
 
   const response = await ghService.getUserDataMega(token, username);
-  console.log(response ? 'getUserDataMega: ✅' : 'getUserDataMega: ❌');
+  console.log('githubController:', response ? 'getUserDataMega: ✅' : 'getUserDataMega: ❌');
 
-  // res.locals.userDataMega = response;
+  res.locals.userDataMega = response;
   next();
 }
 
 githubController.getOrgs = async (req, res, next) => {
   const { token } = req.user;
+
   const response = await ghService.getOrgs(token);
-  console.log(response ? 'getOrgs: ✅' : 'getOrgs: ❌');
+  console.log('githubController:', response ? 'getOrgs: ✅' : 'getOrgs: ❌');
+
   res.locals.orgs = response;
   next();
 }
@@ -215,7 +217,7 @@ githubController.getEventsReceived = async (req, res, next) => {
   const { token, username } = req.user;
 
   const response = await ghService.getEventsReceived(token, username);
-  console.log(response ? 'getEventsReceived: ✅' : 'getEventsReceived: ❌');
+  console.log('githubController:', response ? 'getEventsReceived: ✅' : 'getEventsReceived: ❌');
 
   res.locals.eventsReceived = response;
   next();
@@ -224,9 +226,10 @@ githubController.getEventsReceived = async (req, res, next) => {
 githubController.getPRs = async (req, res, next) => {
   const { token, username, repoName } = req.user;
   const { eventsReceived } = res.locals;
-  // console.log('githubController: getPRs: token', token, 'username', username, 'repoName', repoName);
+
   const response = await ghService.getPRs(token, username, eventsReceived);
-  console.log(response ? 'getPRs: ✅' : 'getPRs: ❌');
+  console.log('githubController:', response ? 'getPRs: ✅' : 'getPRs: ❌');
+
   res.locals.PRs = response;
   next();
 }

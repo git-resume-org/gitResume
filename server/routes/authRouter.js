@@ -12,7 +12,6 @@ authRouter.get('/login', authC.verify, (req, res) => {
   res.send(false);
 });
 
-
 // Handle GitHub callback and exchange code for access token
 // this is the endpoint provided to github in the oauth setup.
 // that is, 'http://localhost:8080/api/auth/call'
