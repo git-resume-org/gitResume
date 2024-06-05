@@ -56,26 +56,3 @@ const chatCompletion = async (file) => {
 };
 
 export { chatCompletion };
-
-  //   const models = await openai.listModels();
-  //   console.log('models', models);
-
-  //   const text = "This is a test sentence.";
-  // const model = "text-davinci-003"; // Replace with your desired OpenAI model
-
-  // const tokenCount = openaiTokenCounter.text(text, model);
-  // console.log(`Token count: ${tokenCount}`);
-
-          // role: 'system',
-          // content: `Evaluate the diff of the following files: ${files.map(file => file.filename).join(', ')}. Return 1-5 technical resume bullet points explaining what changes were made, in JSON format.`
-
-          // content: files.flatMap(file => file.diff.split('\ndiff --git ').map((diff, i) => {
-          //   const filename = file.filename.split(' ')[0];
-          //   if (i === 0) {
-          //     return `Evaluate the following diff of the file ${filename}. Return 1-5 technical resume bullet points explaining what changes were made, in JSON format.`;
-          //   } else {
-          //     return `--- ${filename}\n${diff}`;
-          //   }
-          // })).join('\n\n')
-
-                    // content: file.map(segment => `--- ${segment.filename}\n${segment.diff}`).join('\n\n'),
