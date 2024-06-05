@@ -52,6 +52,33 @@ const RepoComponent = () => {
       numberOfForks: '12'
     }
   ]
+
+  const checkLang = (repoArr) => {
+    repoArr.forEach(repo => {
+      switch (repo.mainLang) {
+      case 'JavaScript' : 
+        repo.mainLangColor = '#f1df5a';
+      case 'Python' : 
+        repo.mainLangColor = '#3672a5';
+      case 'Go' : 
+        repo.mainLangColor = '#00add8';
+      case 'TypeScript' : 
+        repo.mainLangColor = '#3178c6';
+      case 'C#' :
+        repo.mainLangColor = '#188600';
+      case 'Svelte':
+        repo.mainLangColor = '#f75b2b';
+      case 'PHP':
+        repo.mainLangColor = '#505e95';
+      case 'Java':
+        repo.mainLangColor = '#b07219';
+      case 'Ruby' : 
+        repo.mainLangColor = '#701516';
+      default: 
+        repo.mainLangColor = '#d3d3d3';
+      }
+    })
+  }
   return (
     <>
     {arrayTest.map((repo, index) => (
@@ -61,11 +88,11 @@ const RepoComponent = () => {
             <h1 className="text-greenGR text-2xl">{repo.repoName}</h1>
             <p className="border border-white rounded-full custom-padding text-sm ml-2">{repo.private ? 'private' : 'public'}</p>
           </div>
-          <div className="flex flex-wrap text-sm flex justify-around">
-            <p>{repo.mainLang}</p>
+          <div className="flex flex-wrap text-sm flex flex-start">
+            <p className="flex items-center mx-2"><span className="lang-color mx-2" style={{background: '#d8d8d8 !important'}}/>{repo.mainLang}</p>
             <p>{repo.forkedFrom}</p>
-            <p className="flex"><img className="icon" src={forks} alt="" />1</p>
-            <p>{repo.updated}</p>
+            <p className="flex items-center mx-2"><img className="icon" src={forks} alt="" />1</p>
+            <p>Last updated: {repo.updated}</p>
           </div>
         </section>
         <section>
