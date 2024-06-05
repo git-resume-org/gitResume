@@ -1,5 +1,14 @@
 import fetch from 'node-fetch';
-import { writeFileSync, mkdir } from 'node:fs';
+import { writeFileSync, mkdir, readFileSync } from 'node:fs';
+
+import fs from 'fs';
+import path from 'path';
+
+// had to import parseGitPatch as a CJS module to get it to work.
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const parseGitPatch = require('parse-git-patch').default;
+
 
 // set this to false if you dont want to write said data to files. (we're only doing this with our own data.)
 const writeFSUserDataMegaBool = true;
@@ -14,59 +23,6 @@ const ghApiEndpoints = {
   reposA: `repos`,
   reposB: `repos`,
 };
-
-ghService.getPRs = async (token, username, eventsReceived) => {
-
-  const prs = {};
-  const prUrls = []
-
-  // Use map to create an array of promises and then await Promise.all
-  const prPromises = eventsReceived.map(async (event) => {
-    if (event.type === 'PullRequestEvent' && event.payload.pull_request.user.login === username) {
-      // console.log('ghService: getPRs: event', event);
-      const full_name = event.payload.pull_request.base.repo.full_name;
-      const prNum = event.payload.number;
-      const prUrl = `https://github.com/${full_name}/pull/${prNum}.patch`;
-
-      const response = await fetchData(token, prUrl);
-
-      prs[`${full_name}-${prNum}`] = await response.text();
-    }
-  });
-
-  // Wait for all promises to resolve
-  await Promise.all(prPromises);
-
-  writeFileSync(`./data/user/prs`, JSON.stringify(prs, null, 2));
-
-  return prs;
-
-}
-
-ghService.getEventsReceived = async (token, username) => {
-  const url = `https://api.github.com/users/${username}/${ghApiEndpoints.received_events}`;
-
-  const response = await fetchData(token, url);
-  const events = await response.json();
-
-  return events;
-}
-
-
-ghService.getOrgs = async (token) => {
-  const url = `https://api.github.com/user/orgs`;
-  const response = await fetchData(token, url);
-
-  const orgs = await response.json();
-  // recursive = true: if the folder already exists, it doesn't throw an error
-  mkdir((new URL('../../data/user/', import.meta.url)), { recursive: true }, (err) => {
-    if (err) throw err;
-  });
-
-  writeFileSync(`./data/user/orgs`, JSON.stringify(orgs, null, 2));
-
-  return orgs;
-}
 
 const fetchData = async (token, url) => {
   console.log('ghService: fetchData: url', url);
@@ -85,6 +41,23 @@ const fetchData = async (token, url) => {
 
   return response;
 
+}
+
+ghService.getUserDataMeta = async (token) => {
+
+  // console.log('authC: getUserDataMeta: token', token);
+  const url = 'https://api.github.com/user';
+  const response = await fetchData(token, url);
+
+  const userData = await response.json();
+  // recursive = true: if the folder already exists, it doesn't throw an error
+  mkdir((new URL('../../data/user/', import.meta.url)), { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+
+  writeFileSync(`./data/user/metadata`, JSON.stringify(userData, null, 2));
+  // console.log('authC: getUserInfo: userData', userData);
+  return userData;
 }
 
 ghService.getUserDataMega = async (token, username) => {
@@ -135,21 +108,73 @@ ghService.getUserDataMega = async (token, username) => {
   return true;
 };
 
-ghService.getUserDataMeta = async (token) => {
-
-  // console.log('authC: getUserDataMeta: token', token);
-  const url = 'https://api.github.com/user';
+ghService.getOrgs = async (token) => {
+  const url = `https://api.github.com/user/orgs`;
   const response = await fetchData(token, url);
 
-  const userData = await response.json();
+  const orgs = await response.json();
   // recursive = true: if the folder already exists, it doesn't throw an error
   mkdir((new URL('../../data/user/', import.meta.url)), { recursive: true }, (err) => {
     if (err) throw err;
   });
 
-  writeFileSync(`./data/user/metadata`, JSON.stringify(userData, null, 2));
-  // console.log('authC: getUserInfo: userData', userData);
-  return userData;
+  writeFileSync(`./data/user/orgs`, JSON.stringify(orgs, null, 2));
+
+  return orgs;
+}
+
+ghService.getEventsReceived = async (token, username) => {
+  const url = `https://api.github.com/users/${username}/${ghApiEndpoints.received_events}`;
+
+  const response = await fetchData(token, url);
+  const events = await response.json();
+
+  return events;
+}
+
+ghService.getPRs = async (token, username, eventsReceived) => {
+  mkdir((new URL('../../data/prs/', import.meta.url)), { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+
+  const prs = {};
+  const prUrls = []
+
+  // Use map to create an array of promises and then await Promise.all
+  const prPromises = eventsReceived.map(async (event) => {
+    if (event.type === 'PullRequestEvent' && event.payload.pull_request.user.login === username) {
+      // console.log('ghService: getPRs: event', event);
+      const full_name = event.payload.pull_request.base.repo.full_name
+      console.log('ghService: getPRs: full_name', full_name);
+      const prNum = event.payload.number;
+      const prUrl = `https://github.com/${full_name}/pull/${prNum}.patch`;
+
+      const response = await fetchData(token, prUrl);
+
+      const fullNameNoSlash = full_name.replace('/', '_');
+
+      const key = `${fullNameNoSlash}_${prNum}`;
+
+      prs[key] = await response.text();
+
+      const prsFilePath = `./data/prs/${key}.patch`;
+
+      writeFileSync(prsFilePath, prs[key], null, 2);
+      const patch = fs.readFileSync(prsFilePath, 'utf-8');
+      const parsedPatch = parseGitPatch(patch);
+
+      const jsonFilePath = path.join('./data/prs', `${key}.json`);
+      fs.writeFileSync(jsonFilePath, JSON.stringify(parsedPatch, null, 2));
+    }
+  });
+
+  // Wait for all promises to resolve
+  await Promise.all(prPromises);
+
+  writeFileSync(`./data/user/prs`, JSON.stringify(prs, null, 2));
+
+  return prs;
+
 }
 
 export { ghService };

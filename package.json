@@ -93,6 +93,7 @@
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
     "octokit": "^4.0.2",
-    "openai": "^4.47.3"
+    "openai": "^4.47.3",
+    "parse-git-patch": "^1.2.2"
   }
 }
