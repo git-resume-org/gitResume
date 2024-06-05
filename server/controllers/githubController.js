@@ -177,12 +177,6 @@ githubController.getCommits = async (req, res, next) => {
 
     }
 
-    if (sendToOpenAIBool){
-      const openaiCommits0Completion = await chatCompletion(owner, repoName, commits[0].commitSha, commits[0].files);
-
-      writeFileSync(`./data/commits/${owner}_${repoName}_commits0_openai_bulletPoints.json`, JSON.stringify(openaiCommits0Completion, null, 2));
-    }
-
     next();
   } catch (err) {
       return next(createErr({
@@ -233,5 +227,7 @@ githubController.getPRs = async (req, res, next) => {
   res.locals.PRs = response;
   next();
 }
+
+
 
 export { githubController };

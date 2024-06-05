@@ -8,7 +8,7 @@ import path from 'path';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const parseGitPatch = require('parse-git-patch').default;
-
+// const parseGitPatchFork = require('parse-git-patch-fork').default;
 
 // set this to false if you dont want to write said data to files. (we're only doing this with our own data.)
 const writeFSUserDataMegaBool = true;
@@ -162,11 +162,19 @@ ghService.getPRs = async (token, username, eventsReceived) => {
       writeFileSync(prsFilePath, prs[key], null, 2);
       const patch = fs.readFileSync(prsFilePath, 'utf-8');
       const parsedPatch = parseGitPatch(patch);
+      // const parsedPatch = parseGitPatchFork(patch);
+
 
       const jsonFilePath = path.join('./data/prs', `${key}.json`);
       fs.writeFileSync(jsonFilePath, JSON.stringify(parsedPatch, null, 2));
     }
   });
+
+  // TODO:
+  //   - regex to delete everything from and including the following until the next appearance of 'diff':
+  // 'diff --git a/package-lock.json'
+  // 'diff --git a/.gitignore b/.gitignore'
+
 
   // Wait for all promises to resolve
   await Promise.all(prPromises);
