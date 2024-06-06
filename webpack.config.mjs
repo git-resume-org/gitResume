@@ -34,6 +34,7 @@ export default {
     compress: false, // If true, compresses assets to speed up server responses
     port: 8080, // Port number for the development server
     hot: true, // Enable hot module replacement,
+    historyApiFallback: true,
     proxy: [{
       context: '/api',
       target: 'http://localhost:3000',
