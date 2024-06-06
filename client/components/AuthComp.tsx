@@ -1,6 +1,8 @@
 import React from 'react';
 import { useEffect } from 'react';
 
+const ghClientId = process.env.REACT_APP_GH_CLIENT_ID;
+
 const AuthComp: React.FC = () => {
   let authWindow: Window | null;
 
@@ -9,12 +11,17 @@ const AuthComp: React.FC = () => {
     const tokenBool: boolean = await response.json();
 
     if (!tokenBool) {
+      console.log('authC: No token present. Redirecting to github login...');
+      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
       // if window is full screen, open in a new window, which is to say a new tab bc fullscreen.
       if (window.matchMedia('(display-mode: fullscreen)').matches) {
-        authWindow = window.open('/api/auth/login/gh', '_blank');
+        authWindow = window.open(redirectURI, '_blank');
+        // second parameter is the name of the window.
+        // _blank means that the URL should be loaded into a new window.
       } else {
         // otherwise pop up
-        authWindow = window.open('/api/auth/login/gh', '_blank', 'width=800,height=600,,toolbar=no,scrollbars=no,status=no,resizable=no,location=no,menuBar=no,left=500,top=100');
+        authWindow = window.open(redirectURI, '_blank', 'width=800,height=600,,toolbar=no,scrollbars=no,status=no,resizable=no,location=no,menuBar=no,left=500,top=100');
+        // third parameter is the properties of the window. This creates a popup window.
       }
 
       return;
@@ -30,16 +37,8 @@ const AuthComp: React.FC = () => {
   }, []);
 
   const handleMessage = (event: MessageEvent) => {
-    // the value of event.data is set in authController.closeGhLogin
-    if (event.origin === window.location.origin && event.data === 'closeGhLogin') {
-      console.log('Authorization complete');
-
-      if (authWindow) {
-        // Close the login window
-        authWindow.close();
-        authWindow = null;
-      }
-    }
+    // seems the contents of this have no bearing on the window closing. completely handled by authC.cookiesGet.
+    // in case this breaks in the future, look to commit 9790a1d for the code that used to be here.
   };
 
   return (

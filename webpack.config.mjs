@@ -93,5 +93,10 @@ export default {
       ],
     }),
     new ForkTsCheckerWebpackPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'REACT_APP_GH_CLIENT_ID': JSON.stringify(process.env.REACT_APP_GH_CLIENT_ID),
+      },
+    }),
   ],
 };
