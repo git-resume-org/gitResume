@@ -95,7 +95,7 @@ const LandingPage: React.FC = () => {
     <div className="bg-blackGR min-h-screen flex flex-col">
       {/* Fixed header section */}
       <header className='w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
-      <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
+        <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
         {/* centering the nav bar */}
         <div className='flex-grow flex justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
           <NavigationMenu />
@@ -108,7 +108,26 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Main content section */}
-      <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
+      {/* <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
+
+      </main> */}
+      <main className='flex-grow flex flex-col items-center w-full pt-32 px-4'>
+        <div className='flex flex-col items-start justify-start'>
+          <h1 className="text-greenGR z-20 relative text-6xl py-3">get</h1>
+          <div className='z-20 relative py-3'>
+            <button className="btn" style={{ fontSize: '6rem'}}>
+              gitRésumé
+            </button>
+            <span className='ml-3 text-blueGR z-20 relative text-6xl py-3'>to</span>
+          </div>
+          <div>
+            <span className='text-greenGR z-20 relative text-6xl py-3'>get </span>
+            <span className='text-blueGR z-20 relative text-6xl py-3'>your résumé from</span>
+          </div>
+          <h4 className='text-greenGR z-20 relative text-6xl py-3'>git</h4>
+        </div>
+        <br/>
+        <br/>
         <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' />
         <h1 className="text-blueGR z-20 relative text-5xl py-1 text-center">Generate résumé bullet points</h1>
         <h2 className='text-blueGR z-20 relative text-5xl py-1 text-center'>from your git commit history,</h2>

@@ -41,11 +41,13 @@
 //   @apply text-gray-600 mb-6;
 // }
 
-// .btn {
+.btn {
+  // @apply bg-indigo-700 hover:bg-indigo-900 text-blue-300 px-4 py-0 rounded-md;
+  @apply bg-greenGR hover:bg-greenGR/90 text-black px-4 py-0 rounded-md;
+
+}
 
 
-//   @apply bg-indigo-700 hover:bg-indigo-900 text-blue-300 px-4 py-0 rounded-md;
-// }
 
 // html {
 //   scroll-behavior: smooth;
