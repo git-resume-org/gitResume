@@ -3,7 +3,9 @@ const {
 } = require("tailwindcss/lib/util/flattenColorPalette");
 
 module.exports = {
-  purge: ['./client/**/*.{js,jsx,ts,tsx}', './client/**/*.html'],
+  // purge was producing an error because its deprecated. it has been renamed to content.
+  // https://tailwindcss.com/docs/upgrade-guide#configure-content-sources
+  content: ['./client/**/*.{js,jsx,ts,tsx}', './client/**/*.html'],
   darkMode: 'class', // or 'media' or 'false'
   theme: {
     extend: {
@@ -21,10 +23,12 @@ module.exports = {
       }
     },
   },
-  variants: {
-    backgroundColor: ['responsive', 'hover', 'focus', 'active'],
-    extend: {},
-  },
+    // https://tailwindcss.com/docs/upgrade-guide#remove-variant-configuration
+    // "In Tailwind CSS v3.0, every variant is automatically available for every utility by default,
+    // so you can remove the variants section from your tailwind.config.js file."
+  // variants: {
+  //   extend: {},
+  // },
   plugins: [addVariablesForColors],
 }
 
@@ -34,7 +38,7 @@ function addVariablesForColors({ addBase, theme }: any) {
   let newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
- 
+
   addBase({
     ":root": newVars,
   });

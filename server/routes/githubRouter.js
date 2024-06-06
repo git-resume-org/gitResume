@@ -1,6 +1,7 @@
 import express from 'express';
 import { githubController } from '../controllers/githubController.js';
 import { authC } from '../controllers/authController.js';
+// import { openaiC } from '../controllers/openaiController.js';
 
 const githubRouter = express.Router();
 
@@ -17,5 +18,16 @@ githubRouter.get('/repos',
   githubController.getRepos, 
   (req, res) => res.status(200).json(res.locals.userRepos)
 );
+
+githubRouter.post('/ghData',
+  authC.verify,
+  githubController.connectOctokit,
+  githubController.getCommits,
+  githubController.getOrgs,
+  githubController.getEventsReceived,
+  githubController.getPRs,
+  // openaiC.generateBullets,
+  // githubController.getUserDataMega,
+  (req, res) => res.status(200).json(res.locals));
 
 export { githubRouter };
