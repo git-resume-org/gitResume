@@ -1,104 +1,143 @@
-import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import { config } from 'dotenv';
+import jwt from 'jsonwebtoken';
 
-const authController = {};
+import { getUserDataMeta, getUserDataMega } from '../services/githubService.js';
+import { tokenGet } from '../services/authService.js';
+
+// set this to false if you don't want to get detailed user data.
+const getUserDataMegaBool = true;
+
+const authC = {};
 
 config();
 
 const ghClientId = process.env.GH_CLIENT_ID;
-const ghClientSecret = process.env.GH_CLIENT_SECRET;
+const secretKey = process.env.SECRET_KEY;
 
 // the controller to call to check if token exists
-authController.verify = async (req, res, next) => {
-  if (req.session.accessToken) {
-    console.log('authController.verify: accessToken:', req.session.accessToken);
-    next();
 
+authC.verify = async (req, res, next) => {
+  // console.log('authC: verify');
+  const user = req.cookies?.user;
+
+  if (!user) {
+    console.log('authC.verify: ❌');
+    return req.path === '/login' ? res.json(false) : res.status(401).json({ error: 'Unauthorized: No token provided' })
   } else {
-    console.log('authController.verify: no accessToken');
-    res.json(false);
-  }
-};
+    // decode the token (without verification) to quickly access its contents
+    const decodedJwt = jwt.decode(user, { complete: true });
 
-authController.loginGh = async (req, res, next) => {
-  // prompt=consent&
-  try {
-    const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}`;
-    res.redirect(redirectURI);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('An error occurred');
+    // access specific parts of the decoded token
+    const payload = decodedJwt.payload; // the main content of the token
+    const header = decodedJwt.header; // the header of the token
+    console.log('authC.verify: ✅');
+    const tokenDecoded = payload.token;
+    const usernameDecoded = payload.username;
+
+    // console.log('authC.verify: tokenDecoded', tokenDecoded);
+    // console.log('authC.verify: usernameDecoded', usernameDecoded);
+
+    jwt.verify(user, secretKey, (err, verifiedPayload) => {
+      if (err) {
+        if (err.name === 'TokenExpiredError') {
+          console.log('authC.verify: ❌ Token expired');
+          return req.path === '/login' ? res.json(false) : res.status(401).json({ error: 'Unauthorized: Token expired' });
+        }
+        console.log('authC.verify: ❌ Token verification failed', err);
+        return req.path === '/login' ? res.json(false) : res.status(403).json({ error: 'Forbidden: Token verification failed' });
+      }
+
+      verifiedPayload.username = usernameDecoded;
+      verifiedPayload.token = tokenDecoded;
+
+      // console.log('authC.verify: verifiedPayload', verifiedPayload);
+      req.user = verifiedPayload;
+
+      next();
+    });
   }
 };
 
 // this is called after the user has authenticated
-authController.handleGhCallback = async (req, res, next) => {
-  // console.log('authController: handleCallback');
+authC.tokenGet = async (req, res, next) => {
   try {
-    const { code } = req.query;
-    if (!code) {
-      return res.status(400).send('Code not provided');
-    }
-    req.session.accessCode = code;
-    // console.log('authController: code retrieved from github oauth', code);
-    // the request to exchange the code for an access token
-    const response = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: ghClientId,
-        client_secret: ghClientSecret,
-        code,
-      }),
-    });
-
-    // a data object containing the access token
-    const data = await response.json();
-
-    // the access token from github
-    const accessToken = data.access_token;
-
-    if (!accessToken) {
+    const token = await tokenGet(req.query.code);
+    if (!token) {
       return res.status(400).send('accessToken not retrieved');
     }
 
-    console.log('authController: accessToken retrieved, stored in session', accessToken);
+    console.log('token', token);
 
-    // Store the token in session, by way of express-session
-    req.session.accessToken = accessToken;
+    const userDataMeta = await getUserDataMeta(token);
+    if (userDataMeta) {
+      console.log('authC: user retrieved from github', userDataMeta.login);
+    }
 
-    return next();
+    if (userDataMeta.login && getUserDataMegaBool) {
+      await getUserDataMega(token, userDataMeta.login);
+    }
+
+    const userPayload = { token: token, userDataMeta: userDataMeta, userAuth: true, username: userDataMeta.login };
+    // console.log('authC: userPayload', userPayload);
+    req.user = userPayload;
+    next();
   } catch (error) {
     console.log(error);
     res.status(500).send('An error occurred');
   }
-};
-
-authController.loginGhClose = (req, res, next) => {
-
-console.log('authController: loginGhClose');
-// next();
-  res.send(`
-    <script>
-      window.opener.postMessage('loginGhClose', '${req.protocol}://${req.get('host')}');
-      window.close();
-    </script>
-  `);
-
-  // return
-};
-
-authController.verifyTokenTestPassed = (req, res, next) => {
-  console.log('authController.verified: token verified.');
-  // next();
-  res.send(true);
 }
 
-authController.ghLogout = async (req, res, next) => {
-  // prompt=consent&: // this prompts the reauthorization screen of github
+authC.cookiesSet = async (req, res, next) => {
+  console.log('authC: cookiesSet');
+  try {
+    const user = jwt.sign(req.user, secretKey, { expiresIn: '30d' });
+    res.cookie('user', user, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+    });
+
+    next();
+
+    console.log('authC: cookiesSet: about to close window');
+
+    res.send(`
+    <script>
+    window.opener.postMessage('loginGhClose', '${req.protocol}://${req.get('host')}');
+    window.close();
+    </script>
+    `);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('An error occurred');
+  }
+}
+
+authC.verifyTest = (req, res, next) => {
+  // console.log('authC.verifyTest: token verified.');
+  // const token = req.cookies.token;
+  // another example of storing user data in the cookie, this time after verifying the token
+
+  // // next();
+  // res.send(req.user);
+  res.json(true);
+}
+
+authC.cookiesClear = (req, res, next) => {
+  console.log('authC: cookieClear');
+  // res.clearCookie('token');
+
+  if (req.cookies) {
+    Object.keys(req.cookies).forEach(cookieName => {
+      res.clearCookie(cookieName);
+    });
+  }
+
+  next();
+};
+
+authC.logout = async (req, res, next) => {
   try {
     const redirectURI = `https://github.com/login/oauth/authorize?prompt=consent&scope=repo&client_id=${ghClientId}`;
     res.redirect(redirectURI);
@@ -106,11 +145,13 @@ authController.ghLogout = async (req, res, next) => {
     console.log(error);
     res.status(500).send('An error occurred');
   }
+  next();
 };
 
-authController.error = (req, res, next) => {
-  console.log('authController: error');
+
+authC.error = (req, res, next) => {
+  console.log('authC: error');
   res.send('Error');
 };
 
-export { authController };
+export { authC };

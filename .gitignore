@@ -142,6 +142,8 @@ dist
 
 custom-es-config*
 
+data/**/*
+
 # package-lock
 package-lock.json
 

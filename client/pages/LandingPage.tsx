@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationMenu } from '../components/ui/NavBar';
 import { AuthComp } from '../components/AuthComp';
-import { VerifyTokenTestComp } from '../components/VerifyTokenTestComp';
+import { VerifyTestComp } from '../components/VerifyTestComp';
 import { Button } from '../components/ui/get-started-button';
 import { WobbleCard } from '../components/ui/wobble-card';
 import { WobbleCardDemo } from '../components/ui/key-features';
@@ -18,7 +18,7 @@ const LandingPage: React.FC = () => {
         </div>
         <Button variant='default'>Get Started</Button>
       </header>
-      
+
       {/* Main content section */}
       <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
         <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' />
@@ -31,7 +31,7 @@ const LandingPage: React.FC = () => {
           accomplished - that's done for you, with any repo.
         </p>
       </main>
-      
+
       {/* Secondary content section */}
       <section className='w-full flex flex-col items-center mt-10 px-4'>
       <h1 className='text-lavenderGR z-20 relative top-0 right-1/3 pb-12 pr-20 text-4xl py-1 text-center'> Key Features</h1>
