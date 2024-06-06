@@ -5,7 +5,6 @@ import 'normalize.css';
 import './stylesheets/scss/main.scss';
 
 import App from './App';
-import store from './store';
 
 const container = document.getElementById('root');
 

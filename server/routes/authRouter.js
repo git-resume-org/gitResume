@@ -3,15 +3,16 @@ import { authC } from '../controllers/authController.js';
 
 const authRouter = express.Router();
 
-authRouter.get('/login', authC.verify, (req, res) => {
-  // this will be called only if verify returns next()
-  res.send(true);
+authRouter.get('/verify', authC.verify, (req, res) => {
+  // console.log('authRouter: verify: true', 'req.user', req.user);
+  res.json({ success: true });
 }, (err, req, res, next) => {
   // this will be called if verify does not return next()
-  console.log(err);
-  res.send(false);
+  console.log('authRouter: verify: false', 'err', err);
+  res.json({ success: false });
 });
 
+authRouter.get('/signin', authC.verify);
 
 // Handle GitHub callback and exchange code for access token
 // this is the endpoint provided to github in the oauth setup.
@@ -20,8 +21,10 @@ authRouter.get('/call', authC.tokenGet, authC.cookiesSet);
 
 authRouter.get('/verifyTest', authC.verify, authC.verifyTest);
 
-// logout
-// not yet implemented on the front end
-authRouter.get('/logout', authC.cookiesClear, authC.logout);
+// signout
+authRouter.get('/signout',
+  authC.cookiesClear,
+  // authC.signout
+);
 
 export { authRouter };
