@@ -146,7 +146,11 @@ data/**/*
 
 # package-lock
 package-lock.json
+package-lock*
 
 # Lighthouse reports
 lighthouse-reports/
 localhost_*.report.html
+
+diff
+--staged

@@ -56,4 +56,3 @@ export function WobbleCardDemo() {
 }
 
 export default WobbleCardDemo;
-
