@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import StyleLintPlugin from 'stylelint-webpack-plugin';
-
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
@@ -64,6 +64,9 @@ export default {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name][ext]', // Output to correct directory
+        },
       },
     ],
   },
@@ -81,6 +84,12 @@ export default {
       files: 'client/**/**/*.scss',
       failOnError: true,
       quiet: true,
+    }),
+    // server static files (to render images)
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, 'client/assets'), to: 'assets' },
+      ],
     }),
     new ForkTsCheckerWebpackPlugin(),
     new webpack.DefinePlugin({

@@ -143,3 +143,10 @@ dist
 custom-es-config*
 
 data/**/*
+
+# package-lock
+package-lock.json
+
+# Lighthouse reports
+lighthouse-reports/
+localhost_*.report.html
