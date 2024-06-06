@@ -16,11 +16,13 @@ module.exports = {
         darkGrayGR: '#202020',
       },
       fontFamily: {
-        sans: ['Montserrat', 'sans-serif']
+        sans: ['Montserrat', 'sans-serif'],
+        grotesk: ['Space Grotesk', 'sans-serif']
       }
     },
   },
   variants: {
+    backgroundColor: ['responsive', 'hover', 'focus', 'active'],
     extend: {},
   },
   plugins: [addVariablesForColors],
