@@ -3,3 +3,27 @@
 @import 'tailwindcss/utilities';
 
 @import "./styles";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+body {
+  font-family: 'CustomFont', sans-serif;
+}
+
+.custom-padding {
+  padding: 0px 10px;
+  height: 20px;
+  line-height: 15px !important;
+  margin: auto;
+}
+
+.icon {
+  width: 12px;
+  height: 12px;
+}
+
+.lang-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 69px;
+  border: 1px solid #ffffff;
+}
