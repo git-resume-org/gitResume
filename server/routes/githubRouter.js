@@ -11,4 +11,11 @@ githubRouter.post('/commits',
   githubController.getCommits,
   (req, res) => res.status(200).json(res.locals.commits));
 
+githubRouter.get('/repos', 
+  authC.verify,
+  githubController.connectOctokit,
+  githubController.getRepos, 
+  (req, res) => res.status(200).json(res.locals.userRepos)
+);
+
 export { githubRouter };

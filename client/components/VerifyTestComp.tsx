@@ -48,6 +48,24 @@ const VerifyTestComp: React.FC = () => {
     }
   };
 
+  const handleClickGetRepos = async (): Promise<void> => {
+
+    const response = await fetch('/api/github/repos', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    try {
+      const data = await response.json();
+      if (data) {
+        console.log('VerifyTestComp: data', data);
+      }
+    } catch (error) {
+      console.log('VerifyTestComp: error', error);
+    }
+  };
+
   return (
     <div>
       <div>
@@ -67,6 +85,9 @@ const VerifyTestComp: React.FC = () => {
         <button className="btn" style={{ fontSize: '1.5rem', marginTop: '.25rem', marginLeft: 'auto', marginRight: 'auto', display: 'block', width: '100%' }}
           onClick={handleClickGetCommits}
         >get commits</button>
+        <button className="btn" style={{ fontSize: '1.5rem', marginTop: '.25rem', marginLeft: 'auto', marginRight: 'auto', display: 'block', width: '100%' }}
+          onClick={handleClickGetRepos}
+        >get repositories</button>
       </div>
     </div>
   );

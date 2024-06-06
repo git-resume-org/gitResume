@@ -71,7 +71,7 @@ const getUserDataMeta = async (token) => {
     if (err) throw err;
   });
 
-  writeFileSync(`./data/user/info`, JSON.stringify(userData, null, 2));
+  // writeFileSync(`./data/user/info`, JSON.stringify(userData, null, 2));
   // console.log('authC: getUserInfo: userData', userData);
   return userData;
 }
