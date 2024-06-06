@@ -35,14 +35,13 @@ githubController.connectOctokit = (req, res, next) => {
 
   const octokit = new Octokit({
     auth: req.user.token
-    // Expires on Tue, Jun 11 2024
   });
   res.locals.octokit = octokit;
   next();
 };
 
 githubController.getRepos = async (req, res, next) => {
-  console.log('GETTING REPOS');
+  console.log('GETTING REPOS FOR THE AUTHORIZED USER');
   // helper function to retrieve the data where the repo was forked from ('parent')
   const getRepoDetails = async (owner, repoName) => {
     try {
@@ -60,17 +59,14 @@ githubController.getRepos = async (req, res, next) => {
     };
   };
 
-  const getLanguageDetails = async (link, repoName) => {
+  const getLanguageDetails = async (repoOwner, repoName) => {
     let mainLanguage;
     try {
-      const response = await fetch(`${link}`, {
-        headers: {
-          "Accept": 'application/vnd.github+json',
-          // currently github does not recognize this request as authorized - bug
-          'Authorization': `token ${req.user.token}` 
-        }
-      });
-      const languages = await response.json();
+      const languagesResponse = await res.locals.octokit.request(`GET /repos/${repoOwner}/${repoName}/languages`, {
+        owner: repoOwner,
+        repo: repoName
+    });
+      const languages = languagesResponse.data; 
       
       if (Object.keys(languages).length) mainLanguage = Object.keys(languages).reduce((a, b) => languages[a] > languages[b] ? a : b);
       else mainLanguage = null;
@@ -96,7 +92,7 @@ githubController.getRepos = async (req, res, next) => {
       if (repo.fork) forkedFrom = await getRepoDetails(repo.owner.login, repo.name);
       // get language for repos which don't have it specified
       let language = repo.language;
-      if (!repo.language) language = await getLanguageDetails(repo.languages_url, repo.name);
+      if (!repo.language) language = await getLanguageDetails(repo.owner.login, repo.name);
       return {
         id: repo.id,
         repoName: repo.name,
