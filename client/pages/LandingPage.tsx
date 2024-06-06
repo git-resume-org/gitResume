@@ -111,7 +111,7 @@ const LandingPage: React.FC = () => {
       {/* <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
 
       </main> */}
-      <main className='flex-grow flex flex-col items-center w-full pt-32 px-4'>
+      <main className='flex-grow flex flex-col items-center w-full pt-40 px-4'>
         <div className='flex flex-col items-start justify-start'>
           <h1 className="text-greenGR z-20 relative text-6xl py-3">get</h1>
           <div className='z-20 relative py-3'>
