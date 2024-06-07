@@ -9,12 +9,18 @@ import { NavigationMenu } from '../components/ui/NavBar';
 
 const RepoDisplay: React.FC = () => {
   const { selected } = useSelectedRepo();
+  const [ displayError, setDisplayError ] = useState(false)
   console.log(selected, 'selected inside repodisplay')
 
   const handleClickSelect = () => {
     if (selected.length > 0) {
       console.log('sending repos to backend')
     }
+  }
+
+  const handleError = () => {
+    console.log('yes')
+    setDisplayError(true);
   }
 
   const [loading, setLoading] = useState(true);
@@ -68,7 +74,7 @@ const RepoDisplay: React.FC = () => {
 
   return (
     <div className="bg-blackGR min-h-screen">
-      <header className='w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
+      <header className='py-8 px-14 w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
         <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
         {/* centering the nav bar */}
         <div className='flex-grow flex justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
@@ -83,11 +89,17 @@ const RepoDisplay: React.FC = () => {
       <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
         <h1 className="text-white font-sans text-2xl py-8">Select which repository you'd like to get bulletpoints from</h1>
         <RepoComponent />
+        <div
+          className="flex flex-col justify-center items-center mb-12">
         <Button
-          className="my-8 hover:bg-lavenderGR focus:bg-blueGR"
+          className="mt-8 mb-2 hover:bg-lavenderGR focus:bg-lavenderGR active:bg-lavenderGR"
           variant='default'
-          onClick={handleClickSelect}
+          onClick={selected.length > 0 ? handleClickSelect : handleError}
         >Generate BulletPoints</Button>
+        {displayError ? 
+        <h2 className="font-grotesk text-lavenderGR">*need to select at least one repository</h2> : 
+        ''}
+        </div>
         {/* </div> */}
 
       </main>
