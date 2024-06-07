@@ -106,7 +106,7 @@ const RepoComponent = () => {
         <section>
           <button
             className={`border-2 border-greenGR hover:border-lavenderGR hover:text-lavenderGR
-  ${selected.includes(repo.repoName) ? 'bg-lavenderGR text-black hover:text-black border-lavenderGR' : 'text-greenGR'} rounded-full px-8 py-2 font-semibold text-serif`}
+  ${selected.includes(repo.repoName) ? 'bg-lavenderGR text-black hover:text-black active:text-black focus:text-black border-lavenderGR' : 'text-greenGR'} rounded-full px-8 py-2 font-semibold text-serif`}
             onClick={() => handleClick(repo.repoName)}>
             Select
           </button>
