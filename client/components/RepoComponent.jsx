@@ -46,7 +46,13 @@ const RepoComponent = () => {
   // }
 
   if (reposToDisplay === null) {
-    return <div>Loading...</div>
+    return (
+      <>
+    <div className="loader w-32 h-32 border-8 border-black border-t-lavenderGR rounded-full animate-spin">
+    </div>
+    <h2 className="text-white font-grotesk">Loading...</h2>
+    </>
+  )
   }
 
   const filteredRepos = reposToDisplay.filter(repo => 
@@ -56,7 +62,7 @@ const RepoComponent = () => {
     <>
     <input
       type="text"
-      placeholder="search for a repository"
+      placeholder="Search for a repository"
       value={searchQuery}
       onChange={e => setSearchQuery(e.target.value)}
       className="w-3/4 p-2 text-white bg-blackGR border border-darkGrayGR font-grotesk outline-none active:border-greenGR focus:border-greenGR"
