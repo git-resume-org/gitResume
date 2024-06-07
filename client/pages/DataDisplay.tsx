@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../components/ui/get-started-button';
+import { useSelectedRepo } from '../components/SelectedRepoProvider';
 
 const DataDisplay = () => {
+  const { selected } = useSelectedRepo();
+  const [bulletPoints, setBulletPoints] = useState([]);
+  console.log('SELECTED:   ', selected);
+
+  useEffect(() => {
+    console.log('Fetching bullet points data...');
+    fetch('/api/github/ghData', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repoName: selected })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('DATA DISPLAY COMPONENT: FETCHED DATA:   ', data);
+        setBulletPoints(data);
+      })
+      .catch(err => console.error(`Error fetching bullet points for repo ${selected}. Error: ${err}`))
+  }, []);
+
   return (
     <div>
       <header className='p-4 text-sm text-white absolute top-0 left-0 z-10'>
