@@ -92,7 +92,7 @@ const LandingPage: React.FC = () => {
 
 
   return (
-    <div className="bg-blackGR min-h-screen flex flex-col">
+    <div className="flex flex-col items-center justify-center w-full">
       {/* Fixed header section */}
       <header className='w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
         <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
@@ -115,7 +115,7 @@ const LandingPage: React.FC = () => {
         <div className='flex flex-col items-start justify-start'>
           <h1 className="text-greenGR z-20 relative text-6xl py-3">get</h1>
           <div className='z-20 relative py-3'>
-            <button className="btn" style={{ fontSize: '6rem'}}>
+            <button className="btn" style={{ fontSize: '6rem' }}>
               gitRésumé
             </button>
             <span className='ml-3 text-blueGR z-20 relative text-6xl py-3'>to</span>
@@ -126,9 +126,12 @@ const LandingPage: React.FC = () => {
           </div>
           <h4 className='text-greenGR z-20 relative text-6xl py-3'>git</h4>
         </div>
-        <br/>
-        <br/>
-        <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' />
+        {/* <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' /> */}
+
+        <div className="h-20"></div>
+      < hr className='w-3/4 border-1 border-greenGR' />
+      <div className="h-20"></div>
+
         <h1 className="text-blueGR z-20 relative text-5xl py-1 text-center">Generate résumé bullet points</h1>
         <h2 className='text-blueGR z-20 relative text-5xl py-1 text-center'>from your git commit history,</h2>
         <h3 className='text-greenGR z-20 relative text-5xl py-1 text-center'>in just a few clicks.</h3>
@@ -137,18 +140,27 @@ const LandingPage: React.FC = () => {
           commit messages trying to rediscover the specifics of what you <br className="hidden md:block" />
           accomplished - that's done for you, with any authorized repo.
         </p>
+
       </main>
+      <div className="h-20"></div>
+      < hr className='w-3/4 border-1 border-greenGR' />
+      <div className="h-20"></div>
 
       {/* Secondary content section */}
-      <section className='w-full flex flex-col items-center mt-10 px-4'>
-        <h1 className='text-lavenderGR z-20 relative top-0 right-1/3 pb-12 pr-20 text-4xl py-1 text-center'> Key Features</h1>
-        <div className='w-full max-w-6xl pb-12'>
-          <WobbleCardDemo />
-        </div>
+      <section className='flex-grow flex flex-col items-center justify-center w-3/4 px-4'>
+        {/* <div className='flex flex-col items-start'> */}
+           {/* <div className='w-full flex flex-col items-center'> */}
+           {/* <div className='w-full max-w-5xl pb-12 mx-auto'> */}
+            <WobbleCardDemo />
+
+
+        {/* </div> */}
       </section>
 
+      <div className="h-20"></div>
+
       {/* Footer section */}
-      <footer className='w-full flex flex-col md:flex-row justify-between items-center p-6 bg-blackGR mt-auto'>
+      <footer className='w-full flex flex-col md:flex-row justify-between items-center p-10 bg-blackGR mt-auto'>
         <div className='flex flex-col items-center md:items-start mb-4 md:mb-0'>
           <img src='/assets/images/gitResume.png' alt='logo' className='mb-2 h-auto' />
           <h1 className='text-white text-lg text-center md:text-left'>© 2024 gitResume. All Rights Reserved.</h1>

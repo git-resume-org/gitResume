@@ -67,7 +67,7 @@ const RepoDisplay: React.FC = () => {
   }, [authorized]);
 
   return (
-    <div className="bg-blackGR min-h-screen">
+    <div>
       <header className='w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
         <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
         {/* centering the nav bar */}

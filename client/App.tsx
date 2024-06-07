@@ -7,7 +7,7 @@ import {SelectedRepoProvider} from './components/SelectedRepoProvider';
 const App: React.FC = () => {
   return (
     <SelectedRepoProvider>
-      <div className="bg-blackGR h-screen top-0 z-0">
+      <div className="bg-blackGR min-h-screen top-0 z-0">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/repodisplay" element={<RepoDisplay />} />
