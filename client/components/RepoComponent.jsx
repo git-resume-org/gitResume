@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import forks from '../assets/icons/forks.png'
+import forks from '../assets/icons/Forks.png'
 import { useSelectedRepo } from './SelectedRepoProvider';
 
 const RepoComponent = () => {

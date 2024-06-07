@@ -41,9 +41,88 @@ githubController.connectOctokit = (req, res, next) => {
   next();
 };
 
+githubController.getRepos = async (req, res, next) => {
+  console.log('GETTING REPOS FOR THE AUTHORIZED USER');
+  // helper function to retrieve the data where the repo was forked from ('parent')
+  const getRepoDetails = async (owner, repoName) => {
+    try {
+      const repoDetails = await res.locals.octokit.request(`GET /repos/${owner}/${repoName}`, {
+        owner: owner,
+        repo: repoName,
+        headers: {
+          "Accept": 'application/vnd.github+json'
+        }
+      });
+      return repoDetails.data.parent.full_name;
+    } catch (err) {
+      console.error(`Error requesting repo details for ${repoName}:`, err);
+      return null;
+    };
+  };
+
+  const getLanguageDetails = async (repoOwner, repoName) => {
+    let mainLanguage;
+    try {
+      const languagesResponse = await res.locals.octokit.request(`GET /repos/${repoOwner}/${repoName}/languages`, {
+        owner: repoOwner,
+        repo: repoName
+    });
+      const languages = languagesResponse.data; 
+      
+      if (Object.keys(languages).length) mainLanguage = Object.keys(languages).reduce((a, b) => languages[a] > languages[b] ? a : b);
+      else mainLanguage = null;
+      return mainLanguage;
+    } catch (err) {
+      console.error(`Failed to fetch languages for repo ${repoName}. error: ${err}`);
+      return null;
+    }
+  };
+  
+  // gets the list of all repos which the authorized user owns or in which the user is a collaborator
+  try {
+    const userReposGithub = await res.locals.octokit.request('GET /user/repos', {
+      affiliation: 'owner, collaborator',
+      sort: 'pushed',
+      // TO-DO: research what to do if request returns more than 100
+      per_page: 100
+    });
+
+    const repoPromises = userReposGithub.data.map(async repo => {
+      // default for non-forked repositories
+      let forkedFrom = null;
+      if (repo.fork) forkedFrom = await getRepoDetails(repo.owner.login, repo.name);
+      // get language for repos which don't have it specified
+      let language = repo.language;
+      if (!repo.language) language = await getLanguageDetails(repo.owner.login, repo.name);
+      return {
+        id: repo.id,
+        repoName: repo.name,
+        private: repo.private,
+        mainLang: language,
+        updated: repo.updated_at,
+        pushed: repo.pushed_at,
+        forkedFrom,
+        numberOfForks: repo.forks_count
+      }
+    });
+
+    const repos = await Promise.all(repoPromises);
+    res.locals.userRepos = repos;
+  
+    next();
+  } catch (err) {
+    return next(createErr({
+      method: 'getRepos',
+      type: `requesting repo list for authorized user to GitHub API`,
+      err
+    }));
+  }
+};
+
 // gets the list of all commits for a particular repo for a particular author
 githubController.getCommits = async (req, res, next) => {
-  const { owner, repoName } = req.body;
+  const owner = req.user.username;
+  const repoName = req.body.repoName;
 
   console.log('GET COMMITS: owner', owner, 'repoName', repoName);
 
@@ -78,8 +157,6 @@ githubController.getCommits = async (req, res, next) => {
       }));
     };
   };
-
-  const result = [];
 
   // gets the list of all commits from GitHub, this is essentially metadata about commits and doesn't include code details
   try {
