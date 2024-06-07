@@ -55,7 +55,7 @@ ghService.getUserDataMeta = async (token) => {
     if (err) throw err;
   });
 
-  writeFileSync(`./data/user/metadata`, JSON.stringify(userData, null, 2));
+  // writeFileSync(`./data/user/metadata`, JSON.stringify(userData, null, 2));
   // console.log('authC: getUserInfo: userData', userData);
   return userData;
 }
