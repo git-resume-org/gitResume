@@ -94,7 +94,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="bg-blackGR min-h-screen flex flex-col">
       {/* Fixed header section */}
-      <header className='w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
+      <header className='py-8 px-14 w-full flex items-center justify-between absolute top-0 left-0 z-10'>
         <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
         {/* centering the nav bar */}
         <div className='flex-grow flex justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
