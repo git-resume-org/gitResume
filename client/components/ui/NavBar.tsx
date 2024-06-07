@@ -20,7 +20,7 @@ const NavigationMenu = React.forwardRef<
     )}
     {...props}
   >
-    <NavigationMenuPrimitive.List className="group text-greenGR flex flex-1 list-none items-center justify-center space-x-1">
+    <NavigationMenuPrimitive.List className="group text-greenGR font-grotesk flex flex-1 list-none items-center justify-center space-x-1">
       {/* About Us */}
       <NavigationMenuPrimitive.Item>
         <NavigationMenuPrimitive.Trigger

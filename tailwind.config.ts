@@ -20,6 +20,15 @@ module.exports = {
       fontFamily: {
         sans: ['Montserrat', 'sans-serif'],
         grotesk: ['Space Grotesk', 'sans-serif']
+      },
+      keyframes: {
+        spin: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
+        }
+      },
+      animation: {
+        spin: 'spin 1s linear infinite'
       }
     },
   },
