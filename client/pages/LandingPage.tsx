@@ -94,17 +94,19 @@ const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {/* Fixed header section */}
-      <header className='w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
-        <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
-        {/* centering the nav bar */}
-        <div className='flex-grow flex justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-          <NavigationMenu />
+      <header className='w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg'>
+        <div className='w-full flex items-center justify-between p-6'>
+          <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
+          {/* centering the nav bar */}
+          <div className='flex-grow flex justify-center'>
+            <NavigationMenu />
+          </div>
+          <Button
+            variant='default'
+            onClick={handleClickTopRightButton}>
+            {authorized ? 'Your Repos' : 'Sign Up / Sign In'}
+          </Button>
         </div>
-        <Button
-          variant='default'
-          onClick={handleClickTopRightButton}>
-          {authorized ? 'Your Repos' : 'Sign Up / Sign In'}
-        </Button>
       </header>
 
       {/* Main content section */}
@@ -128,14 +130,14 @@ const LandingPage: React.FC = () => {
         </div>
         {/* <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' /> */}
 
-        <div className="h-20"></div>
+        <div className="h-24"></div>
       < hr className='w-3/4 border-1 border-greenGR' />
-      <div className="h-20"></div>
+      <div className="h-24"></div>
 
         <h1 className="text-blueGR z-20 relative text-5xl py-1 text-center">Generate résumé bullet points</h1>
         <h2 className='text-blueGR z-20 relative text-5xl py-1 text-center'>from your git commit history,</h2>
         <h3 className='text-greenGR z-20 relative text-5xl py-1 text-center'>in just a few clicks.</h3>
-        <p className='text-white z-20 relative text-lg py-6 text-center'>
+        <p className='text-blueGR z-20 relative text-lg py-6 text-center'>
           No more wading back through your code or sparsely worded <br className="hidden md:block" />
           commit messages trying to rediscover the specifics of what you <br className="hidden md:block" />
           accomplished - that's done for you, with any authorized repo.
@@ -147,7 +149,7 @@ const LandingPage: React.FC = () => {
       <div className="h-20"></div>
 
       {/* Secondary content section */}
-      <section className='flex-grow flex flex-col items-center justify-center w-3/4 px-4'>
+      <section className='flex-grow flex flex-col items-center justify-center w-3/4 pt-8 px-4'>
         {/* <div className='flex flex-col items-start'> */}
            {/* <div className='w-full flex flex-col items-center'> */}
            {/* <div className='w-full max-w-5xl pb-12 mx-auto'> */}
@@ -157,19 +159,22 @@ const LandingPage: React.FC = () => {
         {/* </div> */}
       </section>
 
-      <div className="h-20"></div>
+      <div className="h-28"></div>
+      < hr className='w-3/4 border-1 border-greenGR' />
+      <div className="h-6"></div>
 
       {/* Footer section */}
-      <footer className='w-full flex flex-col md:flex-row justify-between items-center p-10 bg-blackGR mt-auto'>
-        <div className='flex flex-col items-center md:items-start mb-4 md:mb-0'>
+      <footer className='w-full flex flex-col md:flex-col justify-between items-center p-6 bg-blackGR mt-auto'>
+        <div className='flex flex-col items-center md:items-center mb-4 md:mb-0'>
           <img src='/assets/images/gitResume.png' alt='logo' className='mb-2 h-auto' />
-          <h1 className='text-white text-lg text-center md:text-left'>© 2024 gitResume. All Rights Reserved.</h1>
+          <h1 className='text-blueGR text-sm text-center md:text-left'>© 2024 gitResume. All Rights Reserved.</h1>
         </div>
-        <div className='text-greenGR text-md text-center md:text-left'>
-          <h1 className="py-1">About Us</h1>
+        {/* <div className='text-greenGR text-md text-center md:text-left'> */}
+          {/* <h1 className="py-1">About Us</h1>
           <h1 className="py-1">Application</h1>
-          <h1 className="py-1">Pricing</h1>
-        </div>
+          <h1 className="py-1">Pricing</h1> */}
+        {/* </div> */}
+      <div className="h-6"></div>
       </footer>
     </div>
   );

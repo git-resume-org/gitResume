@@ -4,10 +4,11 @@ import React from "react";
 import { WobbleCard } from "../ui/wobble-card";
 
 const WobbleCardOne = () => (
-  <WobbleCard containerClassName="bg-greyGR w-full">
+      // changed the background color of each button to transparent
+  <WobbleCard containerClassName="bg- w-full">
     {/* <div className="max-w-md"> */}
     <div className="flex items-center justify-center h-20">
-      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-blueGR">
+      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR">
         Git commit history auto-parsed.
       </h2>
       {/* <p className="mt-10 text-left text-base/6 text-greenGR">
@@ -18,10 +19,10 @@ const WobbleCardOne = () => (
 );
 
 const WobbleCardTwo = () => (
-  <WobbleCard containerClassName="bg-greyGR w-full">
+  <WobbleCard containerClassName="bg- w-full">
     {/* <div className="max-w-md"> */}
     <div className="flex items-center justify-center h-20">
-      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-blueGR">
+      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR">
         Résumé bullet points auto-generated.
       </h2>
       {/* <p className="mt-10 text-center text-base/6 text-greenGR">
@@ -33,10 +34,10 @@ const WobbleCardTwo = () => (
 
 
 const WobbleCardThree = () => (
-  <WobbleCard containerClassName="bg-greyGR w-full">
+  <WobbleCard containerClassName="bg- w-full">
     {/* <div className="max-w-md"> */}
     <div className="flex items-center justify-center h-20">
-      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-blueGR">
+      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR">
         Done in seconds.
       </h2>
       {/* <p className="mt-28 text-left text-base/6 text-greenGR">
