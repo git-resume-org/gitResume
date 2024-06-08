@@ -100,9 +100,9 @@ const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {/* Fixed header section */}
-      <header className='w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg h-[90px]'>
+      <header className='px-8 w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg h-[90px]'>
         <div className='w-full flex items-center justify-between p-5'>
-          <a href='/'><img src='/assets/images/gitResume_lg.png' alt='logo' className="w-1/4" /></a>
+          <a href='/'><img src='/assets/images/gitResume_lg.png' alt='logo' className="w-1/6" /></a>
           {/* centering the nav bar */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <NavigationMenu />
@@ -120,43 +120,24 @@ const LandingPage: React.FC = () => {
 
       </main> */}
       <main className='flex-grow flex flex-col items-center w-full pt-40 px-4'>
-        <div className='flex flex-col items-start justify-start'>
-          <h1 className="text-greenGR z-20 relative text-6xl py-3 font-sans">get</h1>
-          <div className='z-20 relative py-3'>
-            {/* changed gitResume from a button to a span */}
-            <span className="gitResumeLanding" style={{ fontSize: '6rem' }}>
-              gitResume
-            </span>
-            <span className='ml-3 text-blueGR z-20 relative text-6xl py-3 font-sans'>to</span>
-          </div>
-          <div>
-            <span className='text-greenGR z-20 relative text-6xl py-3 font-sans'>get </span>
-            <span className='text-blueGR z-20 relative text-6xl py-3 font-sans'>your resume from</span>
-          </div>
-          <h4 className='text-greenGR z-20 relative text-6xl py-3 font-sans'>git</h4>
-        </div>
-        {/* <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' /> */}
-
-        <div className="h-24"></div>
-        < hr className='w-3/4 border-1 border-lavenderGR' />
-        <div className="h-24"></div>
-
-        <h1 className="text-blueGR z-20 relative text-5xl py-1 text-center font-sans">Generate resume bullet points</h1>
-        <h2 className='text-blueGR z-20 relative text-5xl py-1 text-center font-sans'>from your git commit history,</h2>
-        <h3 className='text-greenGR z-20 relative text-5xl py-1 text-center font-sans'>in just a few clicks.</h3>
-        <p className='text-white z-20 relative text-lg py-6 text-center font-grotesk'>
+        <img src='/assets/images/catResume.png' alt='asterisk' className='w-1/6 h-1/6' />
+        <h1 className="font-medium text-blueGR z-20 relative text-5xl py-1 text-center font-sans">Generate resume bullet points</h1>
+        <h2 className='font-medium text-blueGR z-20 relative text-5xl py-1 text-center font-sans'>from your git commit history,</h2>
+        <h3 className='font-medium text-greenGR z-20 relative text-5xl py-1 text-center font-sans'>in just a few clicks.</h3>
+        <p className='leading-tight text-white z-20 relative text-lg py-4 text-center font-grotesk font-thin'>
           No more wading back through your code or sparsely worded <br className="hidden md:block" />
           commit messages trying to rediscover the specifics of what you <br className="hidden md:block" />
           accomplished - that's done for you, with any authorized repo.
         </p>
 
       </main>
-      <div className="h-20"></div>
+      {/* <div className="h-20"></div>
       < hr className='w-3/4 border-1 border-lavenderGR' />
-      <div className="h-20"></div>
+      <div className="h-20"></div> */}
 
       {/* Secondary content section */}
-      <section className='flex-grow flex flex-col items-center justify-center w-3/4 pt-8 px-4'>
+      <section className='flex-grow flex flex-col w-3/4 px-4 py-12'>
+      <h2 className="text-lavenderGR font-grotesk text-3xl py-8">Key Features</h2>
         {/* <div className='flex flex-col items-start'> */}
         {/* <div className='w-full flex flex-col items-center'> */}
         {/* <div className='w-full max-w-5xl pb-12 mx-auto'> */}
@@ -165,9 +146,9 @@ const LandingPage: React.FC = () => {
         {/* </div> */}
       </section>
 
-      <div className="h-28"></div>
+      {/* <div className="h-28"></div>
       < hr className='w-3/4 border-1 border-lavenderGR' />
-      <div className="h-6"></div>
+      <div className="h-6"></div> */}
 
       {/* Footer section */}
       <footer className='w-full flex flex-col md:flex-col justify-between items-center p-6 bg-blackGR mt-auto'>
@@ -180,6 +161,8 @@ const LandingPage: React.FC = () => {
           <h1 className="py-1">Application</h1>
           <h1 className="py-1">Pricing</h1> */}
         {/* </div> */}
+
+        {/* <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' /> */}
         <div className="h-6"></div>
       </footer>
     </div>
