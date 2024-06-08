@@ -5,6 +5,7 @@ import { useSelectedRepo } from '../components/SelectedRepoProvider';
 const DataDisplay = () => {
   const { selected } = useSelectedRepo();
   const [bulletPoints, setBulletPoints] = useState([]);
+  const [copied, setCopied] = useState(false)
   const testBulletPoints = [
     'Used React to develop an application which mirrors the functionality of Chrome Developer Tools Styles tab but displays source file names and line numbers for all types of CSS styles, enabling faster CSS debugging and development.',
     'Integrated DOM and CSS domains of Chrome Developer Protocol to communicate directly with browser’s functionality without abstraction layers provided by higher-level libraries and to fetch CSS property data of the target application.',
@@ -27,13 +28,21 @@ const DataDisplay = () => {
     <li key={`bullet-point-${idx}`} className='text-white my-4'>{bp}</li>
   ));
 
-  const handleCopyToClipboardClick = () => {
-    console.log('Copy to clipboard btn has been clicked!');
+  const handleCopyToClipboardClick = async () => {
+    const bulletPointTexts = testBulletPoints.join('\n• ');
+    const textToCopy = `• ${bulletPointTexts}`;
+
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
   };
 
   return (
     <div>
-      <header className='p-4 text-sm text-white absolute top-0 left-0 z-10'>
+      <header className='p-8 text-sm text-white absolute top-0 left-0 z-10 font-grotesk'>
         <a href='/repodisplay'>← Back to repositories</a>
       </header>
       
@@ -45,11 +54,14 @@ const DataDisplay = () => {
               {bulletPointElements}
             </ul>
           </div>
+          <div>
           <Button
-            className="my-8 hover:bg-lavenderGR focus:bg-blueGR"
+              className={copied ? `my-2 hover:bg-lavenderGR focus:bg-blueGR` : `my-8 hover:bg-lavenderGR focus:bg-blueGR` }
             variant='default'
             onClick={handleCopyToClipboardClick}
           >Copy To Clipboard</Button>
+            {copied ? <h2 className="text-white text-sm mb-8 text-center font-sans" >Copied successfully <span className="animate-[wiggle_1s_ease-in-out_infinite]">✅</span></h2> : ''}
+          </div>
         </div>
       </main>
     </div>

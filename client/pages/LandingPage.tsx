@@ -111,28 +111,28 @@ const LandingPage: React.FC = () => {
       {/* <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
 
       </main> */}
-      <main className='flex-grow flex flex-col items-center w-full pt-40 px-4'>
+      <main className='flex-grow flex flex-col items-center w-full pt-40 px-4 font-sans'>
         <div className='flex flex-col items-start justify-start'>
           <h1 className="text-greenGR z-20 relative text-6xl py-3">get</h1>
           <div className='z-20 relative py-3'>
             <button className="btn" style={{ fontSize: '6rem'}}>
-              gitRésumé
+              gitResume
             </button>
             <span className='ml-3 text-blueGR z-20 relative text-6xl py-3'>to</span>
           </div>
           <div>
             <span className='text-greenGR z-20 relative text-6xl py-3'>get </span>
-            <span className='text-blueGR z-20 relative text-6xl py-3'>your résumé from</span>
+            <span className='text-blueGR z-20 relative text-6xl py-3'>your resume from</span>
           </div>
           <h4 className='text-greenGR z-20 relative text-6xl py-3'>git</h4>
         </div>
         <br/>
         <br/>
         <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' />
-        <h1 className="text-blueGR z-20 relative text-5xl py-1 text-center">Generate résumé bullet points</h1>
-        <h2 className='text-blueGR z-20 relative text-5xl py-1 text-center'>from your git commit history,</h2>
-        <h3 className='text-greenGR z-20 relative text-5xl py-1 text-center'>in just a few clicks.</h3>
-        <p className='text-white z-20 relative text-lg py-6 text-center'>
+        <h1 className="text-blueGR z-20 relative text-5xl py-1 text-center font-sans">Generate resume bullet points</h1>
+        <h2 className='text-blueGR z-20 relative text-5xl py-1 text-center font-sans'>from your git commit history,</h2>
+        <h3 className='text-greenGR z-20 relative text-5xl py-1 text-center font-sans'>in just a few clicks.</h3>
+        <p className='text-white z-20 relative text-lg py-6 text-center font-sans'>
           No more wading back through your code or sparsely worded <br className="hidden md:block" />
           commit messages trying to rediscover the specifics of what you <br className="hidden md:block" />
           accomplished - that's done for you, with any authorized repo.
@@ -141,7 +141,7 @@ const LandingPage: React.FC = () => {
 
       {/* Secondary content section */}
       <section className='w-full flex flex-col items-center mt-10 px-4'>
-        <h1 className='text-lavenderGR z-20 relative top-0 right-1/3 pb-12 pr-20 text-4xl py-1 text-center'> Key Features</h1>
+        <h1 className='text-lavenderGR z-20 relative top-0 right-1/3 pb-12 pr-20 text-4xl py-1 text-center font-grotesk'> Key Features</h1>
         <div className='w-full max-w-6xl pb-12'>
           <WobbleCardDemo />
         </div>
