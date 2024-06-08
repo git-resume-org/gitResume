@@ -37,9 +37,20 @@ const NavigationMenu = React.forwardRef<
             "left-0 top-0 w-full data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 md:absolute md:w-auto max-h-[120px]"
           )}
         >
-          <nav aria-label="Main" className="p-4 bg-greyGR">
+          {/* <nav aria-label="Main" className="p-4 bg-greyGR">
             <ul className='m-0 grid list-none gap-x-[10px] p-[22px] sm:w-[300px] h-auto sm:grid-flow-col sm:grid-rows-3'>
               <li className="text-blueGR">Learn more about the developers for this application!</li>
+            </ul>
+          </nav> */}
+          <nav aria-label="Main" className="p-1 bg-greyGR">
+            <ul className='m-0 grid list-none gap-x-[10px] p-[22px] sm:w-[300px] h-auto sm:grid-flow-col sm:grid-rows-4'>
+              <li className="text-blueGR ">Learn more about the developers</li>
+              <li className="grid grid-cols-4 gap-x-[1px]">
+                <a href="https://github.com/elena-netepenko" target="_blank" rel="noopener noreferrer"><img src="https://ca.slack-edge.com/T05DE2VJ8TH-U05QMKLE7C7-3d3874d7ea3b-512" className="rounded-full h-10" /></a>
+                <a href="https://github.com/JoshBajarias" target="_blank" rel="noopener noreferrer"><img src="https://ca.slack-edge.com/T05DE2VJ8TH-U05QBHT7PV1-dbe9e104ea92-512" className="rounded-full h-10" /></a>
+                <a href="https://github.com/keithgibson" target="_blank" rel="noopener noreferrer"><img src="https://ca.slack-edge.com/T05DE2VJ8TH-U05SANWSWUV-6cd7e6a17692-512" className="rounded-full h-10" /></a>
+                <a href="https://github.com/NinaSkyttis" target="_blank" rel="noopener noreferrer"><img src="https://ca.slack-edge.com/T05DE2VJ8TH-U05PCG75EHY-44194f3df529-512" className="rounded-full h-10" /></a>
+              </li>
             </ul>
           </nav>
         </NavigationMenuPrimitive.Content>

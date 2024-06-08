@@ -4,7 +4,7 @@ import { writeFileSync, mkdir } from 'node:fs';
 import { minimatch } from 'minimatch';
 
 import { ghService } from '../services/githubService.js';
-import { filterBranchesByAuthorCommits, filterReposByAuthorInOrgs } from '../services/filterGhData.js';
+// import { filterBranchesByAuthorCommits, filterReposByAuthorInOrgs } from '../services/filterGhData.js';
 // new node 18 feature requires that json be imported with a type assertion
 import commonlyIgnoredFiles from '../helpers/commonlyIgnoredFiles.json' assert { type: 'json' };
 
