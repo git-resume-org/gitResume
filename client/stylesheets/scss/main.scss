@@ -10,6 +10,7 @@
 // KG-2024-06-05_11-12-PM: lets move these to styles.scss for consistency?
 body {
   font-family: 'CustomFont', sans-serif;
+  overflow-y: scroll; // Always show the scrollbar (area), that way items dont shift when the scrollbar appears.
 }
 
 .custom-padding {

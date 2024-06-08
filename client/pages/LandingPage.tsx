@@ -123,9 +123,10 @@ const LandingPage: React.FC = () => {
         <div className='flex flex-col items-start justify-start'>
           <h1 className="text-greenGR z-20 relative text-6xl py-3 font-sans">get</h1>
           <div className='z-20 relative py-3'>
-            <button className="btn font-sans" style={{ fontSize: '6rem' }}>
+            {/* changed gitResume from a button to a span */}
+            <span className="gitResumeLanding" style={{ fontSize: '6rem' }}>
               gitResume
-            </button>
+            </span>
             <span className='ml-3 text-blueGR z-20 relative text-6xl py-3 font-sans'>to</span>
           </div>
           <div>

@@ -1,8 +1,12 @@
 import { Octokit } from 'octokit';
 import jwt from 'jsonwebtoken';
 import { writeFileSync, mkdir } from 'node:fs';
-// import { chatCompletion } from '../services/openaiService.js';
+import { minimatch } from 'minimatch';
+
 import { ghService } from '../services/githubService.js';
+import { filterBranchesByAuthorCommits, filterReposByAuthorInOrgs } from '../services/filterGhData.js';
+// new node 18 feature requires that json be imported with a type assertion
+import commonlyIgnoredFiles from '../helpers/commonlyIgnoredFiles.json' assert { type: 'json' };
 
 // set this to false if you dont want to write said data to files. (we're only doing this with our own data, during development.)
 const writeFSUserCommitsToRepoBool = true;
@@ -15,10 +19,10 @@ const sendToOpenAIBool = false;
 // helper function to create fileController error objects
 // return value will be the object we pass into next, invoking global error handler
 const createErr = (errInfo) => {
-  const {method, type, err} = errInfo;
+  const { method, type, err } = errInfo;
   return {
     log: `githubController.${method} ${type}: ERROR: ${typeof err === 'object' ? JSON.stringify(err) : err}`,
-    message: {err: `Error occurred in githubController.${method}. Check server logs for more details.`}
+    message: { err: `Error occurred in githubController.${method}. Check server logs for more details.` }
   }
 }
 
@@ -66,9 +70,9 @@ githubController.getRepos = async (req, res, next) => {
       const languagesResponse = await res.locals.octokit.request(`GET /repos/${repoOwner}/${repoName}/languages`, {
         owner: repoOwner,
         repo: repoName
-    });
-      const languages = languagesResponse.data; 
-      
+      });
+      const languages = languagesResponse.data;
+
       if (Object.keys(languages).length) mainLanguage = Object.keys(languages).reduce((a, b) => languages[a] > languages[b] ? a : b);
       else mainLanguage = null;
       return mainLanguage;
@@ -77,16 +81,29 @@ githubController.getRepos = async (req, res, next) => {
       return null;
     }
   };
-  
+
   // gets the list of all repos which the authorized user owns or in which the user is a collaborator
   try {
+    // const userReposFromOrgs = await filterReposByAuthorInOrgs(req.user.username, res.locals.orgNames)
+
+    // console.log('githubController: getRepos: userReposFromOrgs', userReposFromOrgs);
+
     const userReposGithub = await res.locals.octokit.request('GET /user/repos', {
       affiliation: 'owner, collaborator',
       sort: 'pushed',
       // TO-DO: research what to do if request returns more than 100
       per_page: 100
     });
+    // const userReposArray = userReposGithub.data;
 
+    // console.log('githubController: getRepos: userReposFromOrgs', userReposFromOrgs.length);
+    // // userReposArray.push(  );
+
+    // console.log('githubController: getRepos: userReposArray', userReposArray.length);
+    // console.log('githubController: getRepos: userReposArray', userReposArray);
+
+    // console.log('githubController: getRepos: userReposGithub', typeof userReposGithub.data);
+    // console.log('\n\n');
     const repoPromises = userReposGithub.data.map(async repo => {
       // default for non-forked repositories
       let forkedFrom = null;
@@ -108,7 +125,8 @@ githubController.getRepos = async (req, res, next) => {
 
     const repos = await Promise.all(repoPromises);
     res.locals.userRepos = repos;
-  
+    // console.log('githubController: getRepos: repos', repos.length);
+
     next();
   } catch (err) {
     return next(createErr({
@@ -123,9 +141,7 @@ githubController.getRepos = async (req, res, next) => {
 githubController.getCommits = async (req, res, next) => {
   const owner = req.user.username;
   const repoName = req.body.repoName;
-
   console.log('GET COMMITS: owner', owner, 'repoName', repoName);
-
   // check for missing data
   if (!owner || !repoName) return next(createErr({
     method: 'getCommits',
@@ -145,10 +161,18 @@ githubController.getCommits = async (req, res, next) => {
           "Accept": 'application/vnd.github+json'
         }
       });
-      return gitCommitDiffs.data.files.map(file => ({
-        filename: file.filename,
-        patch: file.patch
-      }));
+      // return gitCommitDiffs.data.files.map(file => ({
+      //   filename: file.filename,
+      //   patch: file.patch
+      // }));
+      return gitCommitDiffs.data.files
+        .filter(file => {
+          return !commonlyIgnoredFiles.includes(file.filename);
+        })
+        .map(file => ({
+          filename: file.filename,
+          patch: file.patch
+        }));
     } catch (err) {
       return next(createErr({
         method: 'getCommits',
@@ -167,26 +191,38 @@ githubController.getCommits = async (req, res, next) => {
       author: owner,
       headers: { "Accept": 'application/vnd.github+json' }
     });
-
     // remove all commit messages starting from "Merge", as these are automatic merge commits
     const validCommits = gitCommits.data.filter(cmt => !cmt.commit.message.includes("Merge", 0));
     const mergeCommits = gitCommits.data.filter(cmt => cmt.commit.message.includes("Merge", 0));
+    // console.log('githubController: mergeCommits.length:', mergeCommits.length);
+    let filteredFiles = []
 
-    console.log('githubController: mergeCommits.length:', mergeCommits.length);
-
+    // console.log('githubController: commonlyIgnoredFiles.length:', commonlyIgnoredFiles.length);
     const commitPromises = validCommits.map(async cmt => {
       // Step 1. getCommitCode is an async func, so it returns a Promise #1
       // Step 4. eventually we return Promise #2 to the mapped array
       return await getCommitCode(owner, repoName, cmt.sha)
+        .then(files => {
+          // Filter out the files that are in commonlyIgnoredFiles
+          // console.log('files.length before filtering', files.length);
+          filteredFiles = files.filter(file => {
+            return !commonlyIgnoredFiles.some(pattern => minimatch(file.filename, pattern));
+          });
+
+          return filteredFiles; // return the filtered files
+        })
         // Step 2. the Promise #1 returned from getCommitCode resolves with an array of file objects
         .then(files => {
+          // console.log('files.length after filtering', files.length);
+          // console.log('filteredFiles.length', filteredFiles.length);
           // Step 3. .then returns another Promise #2 which - when resolved - returns a modified object containing all information about the requested commit
           return {
             author: owner,
             date: cmt.commit.author.date,
             message: cmt.commit.message,
             commitSha: cmt.sha, // KG: I propose renaming this to 'sha'.
-            files,
+            // excluding frequently ignored or extremely large but not that particularly valuable files
+            files: filteredFiles,
             shaShort: cmt.sha.slice(0, 7),
           }
         })
@@ -204,64 +240,79 @@ githubController.getCommits = async (req, res, next) => {
           }
         });
     });
-
-    const mergePromises = mergeCommits.map(async cmt => {
-      // Step 1. getCommitCode is an async func, so it returns a Promise #1
-      // Step 4. eventually we return Promise #2 to the mapped array
-      return await getCommitCode(owner, repoName, cmt.sha)
-        // Step 2. the Promise #1 returned from getCommitCode resolves with an array of file objects
-        .then(files => {
-          // Step 3. .then returns another Promise #2 which - when resolved - returns a modified object containing all information about the requested commit
-          return {
-            author: owner,
-            date: cmt.commit.author.date,
-            message: cmt.commit.message,
-            commitSha: cmt.sha,
-            files,
-            shaShort: cmt.sha.slice(0, 7),
-          }
-        })
-        // not using global error handling here. Even if 1 commit request errors out, it returns a valid object which will be wrapped in Promise. Hence, Promise.all never resolved with reject, if requests for commit details partially fail.
-        .catch(err => {
-          console.error(`Failed to get commit code for commit ${cmt.sha}: ${err}`);
-          return {
-            author: owner,
-            date: cmt.commit.author.date,
-            message: cmt.commit.message,
-            commitSha: cmt.sha,
-            files: [],
-            shaShort: cmt.sha.slice(0, 7),
-            error: 'Failed to retrieve commit details'
-          }
-        });
-    });
-
 
     // Promise.all allows to process async requests for commit details in parallel, which helps to reduce time of processing for a large number of commits
     const commits = await Promise.all(commitPromises);
     res.locals.commits = commits;
     // res.locals.ghData.commits = commits;
+    let filteredMerges = []
+    const mergePromises = mergeCommits.map(async cmt => {
+      // Step 1. getCommitCode is an async func, so it returns a Promise #1
+      // Step 4. eventually we return Promise #2 to the mapped array
+      return await getCommitCode(owner, repoName, cmt.sha)
+        .then(files => {
+          // Filter out the files that are in commonlyIgnoredFiles
+          // console.log('files.length before filtering', files.length);
 
-    const merges = await Promise.all(mergePromises);
-    res.locals.userDataMega = merges;
-    res.locals.commits = commits;
+          filteredMerges = files.filter(file => {
+            return !commonlyIgnoredFiles.some(pattern => minimatch(file.filename, pattern));
+          });
 
-    if (writeFSUserCommitsToRepoBool){
+          return filteredMerges; // return the filtered files
+        })
+        // Step 2. the Promise #1 returned from getCommitCode resolves with an array of file objects
+        .then(files => {
+          // console.log('files.length after filtering', files.length);
+          // console.log('filteredFiles.length', filteredFiles.length);
+
+          // Step 3. .then returns another Promise #2 which - when resolved - returns a modified object containing all information about the requested commit
+          return {
+            author: owner,
+            date: cmt.commit.author.date,
+            message: cmt.commit.message,
+            commitSha: cmt.sha, // KG: I propose renaming this to 'sha'.
+            // excluding frequently ignored or extremely large but not that particularly valuable files
+            files: filteredMerges,
+            shaShort: cmt.sha.slice(0, 7),
+          }
+        })
+        // not using global error handling here. Even if 1 commit request errors out, it returns a valid object which will be wrapped in Promise. Hence, Promise.all never resolved with reject, if requests for commit details partially fail.
+        .catch(err => {
+          console.error(`Failed to get commit code for commit ${cmt.sha}: ${err}`);
+          return {
+            author: owner,
+            date: cmt.commit.author.date,
+            message: cmt.commit.message,
+            commitSha: cmt.sha,
+            files: [],
+            shaShort: cmt.sha.slice(0, 7),
+            error: 'Failed to retrieve commit details'
+          }
+        });
+    });
+    const merges = await Promise.all(mergePromises); // Promise.all(mergePromises);
+    res.locals.merges = merges;
+    // res.locals.commits = commits;
+
+
+    // console.log('githubController: commits, complete');
+
+    if (writeFSUserCommitsToRepoBool) {
       mkdir((new URL('../../data/commits', import.meta.url)), { recursive: true }, (err) => {
         if (err) throw err;
       });
-      writeFileSync(`./data/commits/${owner}_${repoName}_commits.json`, JSON.stringify(commits, null, 2));
-      writeFileSync(`./data/commits/${owner}_${repoName}_merges.json`, JSON.stringify(merges, null, 2));
+      writeFileSync(`./data/commits/${owner}_${repoName}_commits_${new Date().toISOString()}.json`, JSON.stringify(commits, null, 2));
+      writeFileSync(`./data/commits/${owner}_${repoName}_merges_${new Date().toISOString()}.json`, JSON.stringify(merges, null, 2));
 
     }
 
     next();
   } catch (err) {
-      return next(createErr({
-        method: 'getCommits',
-        type: 'requesting commits data to GitHub API',
-        err
-      }));
+    return next(createErr({
+      method: 'getCommits',
+      type: 'requesting commits data to GitHub API',
+      err
+    }));
   };
 };
 
@@ -269,7 +320,7 @@ githubController.getUserDataMega = async (req, res, next) => {
   const { token, username } = req.user;
 
   const response = await ghService.getUserDataMega(token, username);
-  console.log('githubController:', response ? 'getUserDataMega: ✅' : 'getUserDataMega: ❌');
+  // console.log('githubController:', response ? 'getUserDataMega: ✅' : 'getUserDataMega: ❌');
 
   res.locals.userDataMega = response;
   next();
@@ -279,9 +330,15 @@ githubController.getOrgs = async (req, res, next) => {
   const { token } = req.user;
 
   const response = await ghService.getOrgs(token);
-  console.log('githubController:', response ? 'getOrgs: ✅' : 'getOrgs: ❌');
+  // console.log('githubController:', response ? 'getOrgs: ✅' : 'getOrgs: ❌');
+
+  // console.log('githubController.getOrgs:', response);
+
+  const orgNames = await response.map(org => org.login);
 
   res.locals.orgs = response;
+  res.locals.orgNames = orgNames;
+
   next();
 }
 
@@ -289,7 +346,7 @@ githubController.getEventsReceived = async (req, res, next) => {
   const { token, username } = req.user;
 
   const response = await ghService.getEventsReceived(token, username);
-  console.log('githubController:', response ? 'getEventsReceived: ✅' : 'getEventsReceived: ❌');
+  // console.log('githubController:', response ? 'getEventsReceived: ✅' : 'getEventsReceived: ❌');
 
   res.locals.eventsReceived = response;
   next();
@@ -300,10 +357,22 @@ githubController.getPRs = async (req, res, next) => {
   const { eventsReceived } = res.locals;
 
   const response = await ghService.getPRs(token, username, eventsReceived);
-  console.log('githubController:', response ? 'getPRs: ✅' : 'getPRs: ❌');
+  // console.log('githubController:', response ? 'getPRs: ✅' : 'getPRs: ❌');
 
   res.locals.PRs = response;
   next();
+}
+
+githubController.getCommitsByBranch = async (req, res, next) => {
+  const { owner, author, repoName } = req.body;
+  // console.log('githubController.getCommitsByBranch: START');
+  // console.log('githubController.getCommitsByBranch: req.user', req.body);
+
+  const response = await filterBranchesByAuthorCommits(owner, author, repoName);
+  // console.log('githubController:', response ? 'getCommitsByBranch: ✅' : 'getCommitsByBranch: ❌');
+  res.locals.commitsByBranch = response;
+  next();
+
 }
 
 

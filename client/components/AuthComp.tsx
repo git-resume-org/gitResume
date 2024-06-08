@@ -46,7 +46,7 @@ const AuthComp: React.FC = () => {
     <div>
       <button className="btn" style={{ fontSize: '5rem', marginTop: '.625rem', marginLeft: ' .5rem ', marginRight: '.5rem' }}
         onClick={handleClick}
-      >gitRésumé</button> <span style={{ fontSize: '3rem' }}> to</span>
+      >gitResume</button> <span style={{ fontSize: '3rem' }}> to</span>
     </div>
   );
 

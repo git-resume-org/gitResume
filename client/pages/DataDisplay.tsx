@@ -12,35 +12,46 @@ const DataDisplay = () => {
   ];
 
   useEffect(() => {
-    console.log('Fetching bullet points data...');
-    fetch('/api/github/ghData', {
+    // console.log('DataDisplay: Fetching bullet points data for repo', selected);
+    fetch('/api/openai/generate/bulletPoints', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ repoName: selected })
     })
-      .then(res => res.json())
-      .then(data => setBulletPoints(data.bulletPoints))
-      .catch(err => console.error(`Error fetching bullet points for repo ${selected}. Error: ${err}`))
+      .then(res => {
+        // console.log('DataDisplay: Fetched data from API:', res);
+        return res.json();
+      })
+      .then(data => {
+        console.log('DataDisplay: Fetched data from API. data.bulletPoints:', data.bulletPoints);
+        setBulletPoints(data.bulletPoints)
+      })
+      .catch(err => console.error(`DataDisplay: Error fetching bullet points for repo ${selected}. Error: ${err}`))
+
   }, []);
 
-  const bulletPointElements = testBulletPoints.map((bp, idx) => (
-    <li key={`bullet-point-${idx}`} className='text-white my-4'>{bp}</li>
-  ));
+
+console.log('dataDisplay: bulletPoints', bulletPoints);
+// console.log('dataDisplay: typeof bulletPoints', typeof bulletPoints);
+
+const bulletPointElements = Array.isArray(bulletPoints) && bulletPoints.length ? bulletPoints.map((bp, idx) => (
+  <li key={`bullet-point-${idx}`} className='text-white my-4'>{bp}</li>
+)) : null;
 
   const handleCopyToClipboardClick = () => {
     console.log('Copy to clipboard btn has been clicked!');
   };
 
   return (
-    <div>
-      <header className='p-4 text-sm text-white absolute top-0 left-0 z-10'>
+    <div className='h-screen scale-y-100'>
+      <header className='p-2 text-sm text-white absolute top-0 left-0 z-10'>
         <a href='/repodisplay'>← Back to repositories</a>
       </header>
-      
+
       <main className='flex items-center justify-center h-screen bg-blackGR'>
-        <div className='bg-darkGrayGR w-3/4 h-4/6 rounded-3xl pt-7 px-10 font-sans flex flex-col items-center justify-between'>
+        <div className='bg-darkGrayGR w-3/4 h-3/4 rounded-3xl pt-7 px-10 font-sans flex flex-col items-center justify-between'>
           <div>
-            <h1 className='text-greenGR text-2xl mb-5'>"{selected}" repository</h1>
+            <h1 className='text-greenGR text-2xl mb-5'>repo: {selected}</h1>
             <ul className='list-disc list-inside'>
               {bulletPointElements}
             </ul>
