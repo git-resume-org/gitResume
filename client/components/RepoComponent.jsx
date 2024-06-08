@@ -3,7 +3,7 @@ import forks from '../assets/icons/Forks.png'
 import { useSelectedRepo } from './SelectedRepoProvider';
 
 const RepoComponent = () => {
-  const {selected, handleClick} = useSelectedRepo();
+  const {selected, handleClickSelect} = useSelectedRepo();
   const [reposToDisplay, setReposToDisplay] = useState(null)
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -21,13 +21,13 @@ const RepoComponent = () => {
   // const checkLang = (repoArr) => {
   //   repoArr.forEach(repo => {
   //     switch (repo.mainLang) {
-  //     case 'JavaScript' : 
+  //     case 'JavaScript' :
   //       repo.mainLangColor = '#f1df5a'; break;
-  //     case 'Python' : 
+  //     case 'Python' :
   //       repo.mainLangColor = '#3672a5'; break;
-  //     case 'Go' : 
+  //     case 'Go' :
   //       repo.mainLangColor = '#00add8'; break;
-  //     case 'TypeScript' : 
+  //     case 'TypeScript' :
   //       repo.mainLangColor = '#3178c6'; break;
   //     case 'C#' :
   //       repo.mainLangColor = '#188600'; break;
@@ -37,9 +37,9 @@ const RepoComponent = () => {
   //       repo.mainLangColor = '#505e95'; break;
   //     case 'Java':
   //       repo.mainLangColor = '#b07219'; break;
-  //     case 'Ruby' : 
+  //     case 'Ruby' :
   //       repo.mainLangColor = '#701516'; break;
-  //     default: 
+  //     default:
   //       repo.mainLangColor = '#d3d3d3'; break;
   //     }
   //   })
@@ -55,9 +55,10 @@ const RepoComponent = () => {
   )
   }
 
-  const filteredRepos = reposToDisplay.filter(repo => 
+  const filteredRepos = reposToDisplay.filter(repo =>
     repo.repoName.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
   return (
     <>
     <input
@@ -65,37 +66,37 @@ const RepoComponent = () => {
       placeholder="Search for a repository"
       value={searchQuery}
       onChange={e => setSearchQuery(e.target.value)}
-      className="w-3/4 p-2 text-white bg-blackGR border border-darkGrayGR font-grotesk outline-none active:border-greenGR focus:border-greenGR"
+        className="w-3/4 p-2 text-white bg-blackGR border-2 border-darkGrayGR font-grotesk outline-none active:border-greenGR focus:border-greenGR"
       />
     {filteredRepos.length > 0 ? filteredRepos.map((repo, index) => (
-      <div key={index} 
+      <div key={index}
         className="text-white font-sans bg-darkGrayGR w-3/4 flex justify-between items-center py-4 px-4 my-2">
         <section>
-          <div 
+          <div
             className="flex flex-wrap">
-            <h1 
+            <h1
               className="text-greenGR text-2xl">
               {repo.repoName}
             </h1>
-            <p 
+            <p
               className="border border-white rounded-full custom-padding text-sm ml-2">
               {repo.private ? 'private' : 'public'}
             </p>
           </div>
-          <div 
+          <div
              className="flex flex-wrap text-sm flex flex-start">
-            <p 
+            <p
               className="flex items-center mx-2">
-              <span 
+              <span
               className="lang-color mx-2"
               style={{background: '#d8d8d8 !important'}}/>
               {repo.mainLang}</p>
             <p>{repo.forkedFrom}</p>
-            <p 
+            <p
               className="flex items-center mx-2">
-              <img 
-                className="icon" 
-                src={forks} 
+              <img
+                className="icon"
+                src={forks}
                 alt="" />
             {repo.numberOfForks}
             </p>
@@ -107,10 +108,12 @@ const RepoComponent = () => {
           <button
             className={`border-2 border-greenGR hover:border-lavenderGR hover:text-lavenderGR
   ${selected.includes(repo.repoName) ? 'bg-lavenderGR text-black hover:text-black active:text-black focus:text-black border-lavenderGR' : 'text-greenGR'} rounded-full px-8 py-2 font-semibold text-serif`}
-            onClick={() => handleClick(repo.repoName)}>
+            onClick={() => handleClickSelect(repo.repoName)}>
             Select
           </button>
         </section>
+
+
       </div>
     )) : <div>No repositories found.</div>}
     </>

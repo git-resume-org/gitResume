@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import { authRouter } from './routes/authRouter.js';
 import { githubRouter } from './routes/githubRouter.js';
+import { openaiRouter } from './routes/openaiRouter.js';
 
 config();
 const ghClientId = process.env.GH_CLIENT_ID;
@@ -27,7 +28,9 @@ app.use(cookieParser());
 
 app.use('/api/auth/', authRouter);
 
-app.use('/api/github', githubRouter);
+app.use('/api/github/', githubRouter);
+
+app.use('/api/openai/', openaiRouter);
 
 app.get('/', (req, res) => {
   res.send('Home page');

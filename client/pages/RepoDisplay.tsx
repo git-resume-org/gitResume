@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../stylesheets/scss/styles.scss';
 import RepoComponent from '../components/RepoComponent';
+import RepoTestComp from '../components/RepoTestComp';
 import { SelectedRepoProvider, useSelectedRepo } from '../components/SelectedRepoProvider';
 import { Button } from '../components/ui/get-started-button';
 import { NavigationMenu } from '../components/ui/NavBar';
@@ -9,12 +10,12 @@ import { useNavigate } from 'react-router-dom';
 
 const RepoDisplay: React.FC = () => {
   const { selected } = useSelectedRepo();
-  const [ displayError, setDisplayError ] = useState(false)
-  console.log(selected, 'selected inside repodisplay')
+  const [displayError, setDisplayError] = useState(false)
+  // console.log(selected, 'selected inside repodisplay')
 
   const navigate = useNavigate();
 
-  const handleClickSelect = () => {
+  const handleClickGenerate = () => {
     if (selected.length > 0) {
       console.log('sending repos to backend');
       navigate('/bulletpoints');
@@ -36,10 +37,10 @@ const RepoDisplay: React.FC = () => {
     setAuthorized(data.success);
 
     if (!data.success) {
-      console.log('authorization: ❌');
+      console.log('repoDisplay: authorization: ❌');
       return false;
     }
-    console.log('authorization: ✅');
+    console.log('repoDisplay: authorization: ✅');
 
     return true;
 
@@ -48,7 +49,6 @@ const RepoDisplay: React.FC = () => {
   const handleClickSignOut = async (): Promise<void> => {
     const response = await fetch('/api/auth/signout');
     const data = await response.json();
-
     if (!data.success) {
       console.log('error during signout');
       return;
@@ -59,7 +59,6 @@ const RepoDisplay: React.FC = () => {
 
     }, 250);
     return;
-
   }
 
   useEffect(() => {
@@ -76,36 +75,46 @@ const RepoDisplay: React.FC = () => {
   }, [authorized]);
 
   return (
-    <div className="bg-blackGR min-h-screen">
-      <header className='py-8 px-14 w-full flex items-center justify-between p-4 absolute top-0 left-0 z-10'>
-        <a href='/'><img src='/assets/images/gitResume.png' alt='logo' className="h-auto" /></a>
-        {/* centering the nav bar */}
-        <div className='flex-grow flex justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-          <NavigationMenu />
+    <div className="flex flex-col items-center justify-center w-full">
+      {/* Fixed header section */}
+      <header className='w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg h-[90px]'>
+        <div className='w-full flex items-center justify-between p-5'>
+          <a href='/'><img src='/assets/images/gitResume_lg.png' alt='logo' className="w-1/4" /></a>
+          {/* centering the nav bar */}
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <NavigationMenu />
+          </div>
+          <Button variant='default'
+            onClick={handleClickSignOut}><img src="" alt="" />sign out</Button>
         </div>
-        {/* <HoverBorderGradientButton /> */}
-        <Button variant='default'
-          onClick={handleClickSignOut}><img src="" alt="" />sign out</Button>
       </header>
 
       {/* <div className="flex flex-col justify-center items-center w-full h-screen"> */}
       <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
         <h1 className="text-white font-sans text-2xl py-8">Select which repository you'd like to get bulletpoints from</h1>
         <RepoComponent />
-        <div
-          className="flex flex-col justify-center items-center mb-12">
-        <Button
-          className="mt-8 mb-2 hover:bg-lavenderGR focus:bg-lavenderGR active:bg-lavenderGR"
-          variant='default'
-          onClick={selected.length > 0 ? handleClickSelect : handleError}
-        >Generate BulletPoints</Button>
-        {displayError ? 
-        <h2 className="font-grotesk text-lavenderGR">*need to select at least one repository</h2> : 
-        ''}
-        </div>
+        {/* < RepoTestComp /> */}
+        <br />
+        <br />
+
         {/* </div> */}
 
       </main>
+      {/* <footer className='w-full flex items-center justify-center p-4 relative bottom-0 left-0 z-10'> */}
+      <footer className='w-full fixed flex flex-col items-center left-0 bottom-0 z-50 bg-blackGR backdrop-blur-sm shadow-sm'>
+
+          <Button
+            // disabling the button if no repo is selected
+            className={`hover:bg-lavenderGR focus:bg-lavenderGR active:bg-lavenderGR ${selected.length === 0 ? 'cursor-not-allowed bg-gray-500' : ''}`}
+            variant='default'
+            onClick={selected.length > 0 ? handleClickGenerate : handleError}
+            disabled={selected.length === 0}
+          >Generate BulletPoints</Button>
+          {displayError ?
+            <h2 className="font-grotesk text-lavenderGR bg-blackGR ">*need to select at least one repository</h2> :
+            ''}
+
+      </footer>
     </div>
   );
 };

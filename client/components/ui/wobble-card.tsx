@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
+import { throttle } from "lodash";
 
 export const WobbleCard: React.FC<{
   children: React.ReactNode;
@@ -11,13 +12,13 @@ export const WobbleCard: React.FC<{
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
-    const { clientX, clientY } = event;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (clientX - (rect.left + rect.width / 2)) / 20;
-    const y = (clientY - (rect.top + rect.height / 2)) / 20;
-    setMousePosition({ x, y });
-  };
+const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
+  const { clientX, clientY } = event;
+  const rect = event.currentTarget.getBoundingClientRect();
+  const x = (clientX - (rect.left + rect.width / 2)) / 20;
+  const y = (clientY - (rect.top + rect.height / 2)) / 20;
+  setMousePosition({ x, y });
+}
 
   return (
     <motion.section
@@ -27,12 +28,13 @@ export const WobbleCard: React.FC<{
         setIsHovering(false);
         setMousePosition({ x: 0, y: 0 });
       }}
-      style={{
-        transform: isHovering
-          ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
-          : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-        transition: "transform 0.1s ease-out",
-      }}
+      // Note:kg 2024-06-07_12-58-AM: something in here causing the black bar to appear across the screen
+      // style={{
+      //   transform: isHovering
+      //     ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
+      //     : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+      //   transition: "transform 0.9s ease-out",
+      // }}
       className={cn(
         "mx-auto w-8/12 bg-greyGR border border-blueGR relative rounded-2xl overflow-hidden",
         containerClassName
@@ -68,7 +70,7 @@ const Noise = () => {
       className="absolute inset-0 w-full h-full scale-[1.2] transform opacity-10 [mask-image:radial-gradient(#fff,transparent,75%)]"
       style={{
         backgroundImage: "../../assets/images/noise.webp",
-        backgroundSize: "30%",
+        backgroundSize: "100%",
       }}
     ></div>
   );

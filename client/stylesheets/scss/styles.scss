@@ -22,6 +22,7 @@
 }
 
 
+
 // body {
 //   @apply flex flex-col min-h-screen bg-gradient-to-b from-blue-400 to-indigo-600;
 //   vertical-align: middle;
@@ -47,7 +48,10 @@
 
 }
 
+.gitResumeLanding {
+  @apply  bg-greenGR text-black px-3 py-3 font-sans rounded-md;
 
+}
 
 // html {
 //   scroll-behavior: smooth;

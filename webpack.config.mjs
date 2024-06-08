@@ -76,7 +76,7 @@ export default {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'gitRésumé', // The title of the generated HTML file.
+      title: 'gitResume', // The title of the generated HTML file.
       filename: 'index.html', // The name of the generated HTML file.
       template: 'client/template.html', // Use the "template.html" file as the base for the generated HTML.
     }),

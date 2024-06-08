@@ -1,7 +1,6 @@
 import express from 'express';
 import { githubController } from '../controllers/githubController.js';
 import { authC } from '../controllers/authController.js';
-// import { openaiC } from '../controllers/openaiController.js';
 
 const githubRouter = express.Router();
 
@@ -12,22 +11,24 @@ githubRouter.post('/commits',
   githubController.getCommits,
   (req, res) => res.status(200).json(res.locals.commits));
 
-githubRouter.get('/repos', 
+githubRouter.get('/repos',
   authC.verify,
   githubController.connectOctokit,
-  githubController.getRepos, 
+  // githubController.getOrgs,
+  githubController.getRepos,
   (req, res) => res.status(200).json(res.locals.userRepos)
 );
 
 githubRouter.post('/ghData',
   authC.verify,
   githubController.connectOctokit,
-  githubController.getCommits,
-  githubController.getOrgs,
-  githubController.getEventsReceived,
-  githubController.getPRs,
-  // openaiC.generateBullets,
+  // githubController.getCommits,
+  // githubController.getEventsReceived,
+  // githubController.getPRs,
+  // githubController.getCommitsByBranch,
   // githubController.getUserDataMega,
+  // githubController.getOrgs,
+  githubController.getRepos,
   (req, res) => res.status(200).json(res.locals));
 
 export { githubRouter };
