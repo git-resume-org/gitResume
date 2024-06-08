@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 transition duration-300 ease-in-out transform"
+  "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 transition duration-300 ease-in-out transform"
 );
 
 const NavigationMenu = React.forwardRef<
@@ -20,7 +20,7 @@ const NavigationMenu = React.forwardRef<
     )}
     {...props}
   >
-    <NavigationMenuPrimitive.List className="group text-greenGR font-grotesk flex flex-1 list-none items-center justify-center space-x-1">
+    <NavigationMenuPrimitive.List className="group text-greenGR font-grotesk flex flex-1 list-none items-center font-thin justify-center space-x-1">
       {/* About Us */}
       <NavigationMenuPrimitive.Item>
         <NavigationMenuPrimitive.Trigger

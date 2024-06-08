@@ -79,7 +79,7 @@ const RepoDisplay: React.FC = () => {
       {/* Fixed header section */}
       <header className='w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg h-[90px]'>
         <div className='w-full flex items-center justify-between p-5'>
-          <a href='/'><img src='/assets/images/gitResume_lg.png' alt='logo' className="w-1/4" /></a>
+          <a href='/'><img src='/assets/images/gitResume_lg.png' alt='logo' className="w-1/6" /></a>
           {/* centering the nav bar */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <NavigationMenu />

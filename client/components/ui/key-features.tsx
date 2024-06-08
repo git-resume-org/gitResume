@@ -8,9 +8,9 @@ const WobbleCardOne = () => (
   <WobbleCard containerClassName="bg-greyGR w-full">
     {/* <div className="max-w-md"> */}
     <div className="flex items-center justify-center h-20">
-    <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR font-grotesk">
+    <h2 className="text-center text-base md:text-xl lg:text-2xl tracking-[-0.015em] text-greenGR font-grotesk">
     Git commit history
-      </h2><span className="mx-1"> <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR font-grotesk underline">auto-parsed
+      </h2><span className="mx-1"> <h2 className="text-center text-base md:text-xl lg:text-2xl tracking-[-0.015em] text-greenGR font-grotesk underline">auto-parsed
       </h2></span>
       {/* <p className="mt-10 text-left text-base/6 text-greenGR">
         Click here to learn more!
@@ -23,9 +23,9 @@ const WobbleCardTwo = () => (
   <WobbleCard containerClassName="bg-greyGR w-full">
     {/* <div className="max-w-md"> */}
     <div className="flex items-center justify-center h-20">
-    <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR font-grotesk">
+    <h2 className="text-center text-base md:text-xl lg:text-2xl tracking-[-0.015em] text-greenGR font-grotesk">
     Resume bullet points
-      </h2><span className="mx-1"> <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR font-grotesk underline"> auto-generated
+      </h2><span className="mx-1"> <h2 className="text-center text-base md:text-xl lg:text-2xl tracking-[-0.015em] text-greenGR font-grotesk underline"> auto-generated
       </h2></span>
       {/* <p className="mt-10 text-center text-base/6 text-greenGR">
         Click here to learn more!
@@ -38,9 +38,9 @@ const WobbleCardThree = () => (
   <WobbleCard containerClassName="bg-greyGR w-full">
     {/* <div className="max-w-md"> */}
     <div className="flex items-center justify-center h-20">
-      <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR font-grotesk">
+      <h2 className="text-center text-base md:text-xl lg:text-2xl tracking-[-0.015em] text-greenGR font-grotesk">
         Done in
-      </h2><span className="mx-1"> <h2 className="text-center text-base md:text-xl lg:text-2xl font-semibold tracking-[-0.015em] text-greenGR font-grotesk underline">seconds
+      </h2><span className="mx-1"> <h2 className="text-center text-base md:text-xl lg:text-2xl tracking-[-0.015em] text-greenGR font-grotesk underline">seconds
       </h2></span>
       {/* <p className="mt-28 text-left text-base/6 text-greenGR">
         Click here to learn more!
