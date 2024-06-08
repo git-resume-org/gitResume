@@ -5,16 +5,19 @@ import { SelectedRepoProvider, useSelectedRepo } from '../components/SelectedRep
 import { Button } from '../components/ui/get-started-button';
 import { NavigationMenu } from '../components/ui/NavBar';
 // import arrow from '../assets/icons/arrow.png';
-
+import { useNavigate } from 'react-router-dom';
 
 const RepoDisplay: React.FC = () => {
   const { selected } = useSelectedRepo();
   const [ displayError, setDisplayError ] = useState(false)
   console.log(selected, 'selected inside repodisplay')
 
+  const navigate = useNavigate();
+
   const handleClickSelect = () => {
     if (selected.length > 0) {
-      console.log('sending repos to backend')
+      console.log('sending repos to backend');
+      navigate('/bulletpoints');
     }
   }
 
