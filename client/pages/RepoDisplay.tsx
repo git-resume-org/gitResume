@@ -5,16 +5,25 @@ import { SelectedRepoProvider, useSelectedRepo } from '../components/SelectedRep
 import { Button } from '../components/ui/get-started-button';
 import { NavigationMenu } from '../components/ui/NavBar';
 // import arrow from '../assets/icons/arrow.png';
-
+import { useNavigate } from 'react-router-dom';
 
 const RepoDisplay: React.FC = () => {
   const { selected } = useSelectedRepo();
+  const [ displayError, setDisplayError ] = useState(false)
   console.log(selected, 'selected inside repodisplay')
+
+  const navigate = useNavigate();
 
   const handleClickSelect = () => {
     if (selected.length > 0) {
-      console.log('sending repos to backend')
+      console.log('sending repos to backend');
+      navigate('/bulletpoints');
     }
+  }
+
+  const handleError = () => {
+    console.log('yes')
+    setDisplayError(true);
   }
 
   const [loading, setLoading] = useState(true);
@@ -83,11 +92,17 @@ const RepoDisplay: React.FC = () => {
       <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
         <h1 className="text-white font-sans text-2xl py-8">Select which repository you'd like to get bulletpoints from</h1>
         <RepoComponent />
+        <div
+          className="flex flex-col justify-center items-center mb-12">
         <Button
-          className="my-8 hover:bg-lavenderGR focus:bg-blueGR"
+          className="mt-8 mb-2 hover:bg-lavenderGR focus:bg-lavenderGR active:bg-lavenderGR"
           variant='default'
-          onClick={handleClickSelect}
+          onClick={selected.length > 0 ? handleClickSelect : handleError}
         >Generate BulletPoints</Button>
+        {displayError ?
+        <h2 className="font-grotesk text-lavenderGR">*need to select at least one repository</h2> :
+        ''}
+        </div>
         {/* </div> */}
 
       </main>

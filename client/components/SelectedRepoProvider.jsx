@@ -10,15 +10,21 @@ const SelectedRepoContext = createContext(defaultContextValue);
 const useSelectedRepo = () => useContext(SelectedRepoContext);
 
 const SelectedRepoProvider = ({children}) => {
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState('');
 
   const handleClick = (repoName) => {
-    setSelected(prevSelected => {
-      return prevSelected.includes(repoName) ?
-        prevSelected.filter(item => item !== repoName) :
-        [...prevSelected, repoName];
-    });
+    // setSelected(prevSelected => {
+    //   return prevSelected.includes(repoName) ?
+    //     prevSelected.filter(item => item !== repoName) :
+    //     [...prevSelected, repoName];
+    // });
+    setSelected(repoName);
+    console.log(selected, 'selected!');
   };
+
+  // const handleClick = (repoName) => {
+  //   setSelected(repoName);
+  // } 
 
   return (
     <SelectedRepoContext.Provider value={{ selected, handleClick}}>
