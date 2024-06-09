@@ -3,6 +3,8 @@ import express from 'express';
 import session from 'express-session';
 import { config } from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
 
 import { authRouter } from './routes/authRouter.js';
 import { githubRouter } from './routes/githubRouter.js';
@@ -13,18 +15,19 @@ const ghClientId = process.env.GH_CLIENT_ID;
 const ghClientSecret = process.env.GH_CLIENT_SECRET;
 const secretKey = process.env.SECRET_KEY;
 
+const MODE = process.env.NODE_ENV || 'development';
+console.log('server.js: environment: ', MODE);
+
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(cookieParser());
 
-// app.use(session({
-//   secret: sessionSecret, // a secret string used to encrypt the session cookie
-//   resave: false, // if true, store session data in server memory.
-//   saveUninitialized: false, // if true, save a session to the store even if it is not modified
-//   cookie: { secure: false } // if true, cookies will only be transmitted over https. Use when deploying to production
-// }));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+MODE === 'production' ? app.use(express.static(path.join(__dirname, '../dist'))) : null;
 
 app.use('/api/auth/', authRouter);
 
@@ -32,9 +35,7 @@ app.use('/api/github/', githubRouter);
 
 app.use('/api/openai/', openaiRouter);
 
-app.get('/', (req, res) => {
-  res.send('Home page');
-});
+MODE === 'production' ? app.get('/*', (req, res) => {res.sendFile(path.join(__dirname, '../dist', 'index.html'));}) : null;
 
 // global error handler
 app.use((err, req, res, next) => {
