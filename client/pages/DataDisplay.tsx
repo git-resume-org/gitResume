@@ -6,6 +6,7 @@ const DataDisplay = () => {
   const { selected } = useSelectedRepo();
   const [bulletPoints, setBulletPoints] = useState([]);
   const [copied, setCopied] = useState(false)
+
   // const testBulletPoints = [
   //   'Used React to develop an application which mirrors the functionality of Chrome Developer Tools Styles tab but displays source file names and line numbers for all types of CSS styles, enabling faster CSS debugging and development.',
   //   'Integrated DOM and CSS domains of Chrome Developer Protocol to communicate directly with browser’s functionality without abstraction layers provided by higher-level libraries and to fetch CSS property data of the target application.',
@@ -51,6 +52,16 @@ const bulletPointElements = Array.isArray(bulletPoints) && bulletPoints.length ?
     }
   };
 
+  const showLoading = () => {
+      return (
+      <>
+      <div className="loader w-32 h-32 border-8 border-black border-t-lavenderGR rounded-full animate-spin">
+      </div>
+      <h2 className="text-white font-grotesk">Bullet Points Loading...</h2>
+      </>
+      )
+  }
+
   return (
     <div>
       <header className='p-8 text-sm text-white absolute top-0 left-0 z-10 font-grotesk'>
@@ -65,6 +76,7 @@ const bulletPointElements = Array.isArray(bulletPoints) && bulletPoints.length ?
               {bulletPointElements}
             </ul>
           </div>
+          {!bulletPointElements ? showLoading() : ''}
           <div>
           <Button
               className={copied ? `my-2 hover:bg-lavenderGR focus:bg-blueGR` : `my-8 hover:bg-lavenderGR focus:bg-blueGR` }

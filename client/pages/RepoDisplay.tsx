@@ -91,7 +91,8 @@ const RepoDisplay: React.FC = () => {
 
       {/* <div className="flex flex-col justify-center items-center w-full h-screen"> */}
       <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
-        <h1 className="text-white font-sans text-2xl py-8">Select which repository you'd like to get bulletpoints from</h1>
+       {/* NOTE-KG: i think it looks pretty clean wihtout the description here. and with the select and generate bullet points buttons visible, i think relatively self-explanatory too */}
+        {/* <h1 className="text-white font-sans text-2xl py-8">Select which repository you'd like to get bullet points from</h1> */}
         <RepoComponent />
         {/* < RepoTestComp /> */}
         <br />
@@ -109,7 +110,7 @@ const RepoDisplay: React.FC = () => {
             variant='default'
             onClick={selected.length > 0 ? handleClickGenerate : handleError}
             disabled={selected.length === 0}
-          >Generate BulletPoints</Button>
+          >Generate Bullet Points</Button>
           {displayError ?
             <h2 className="font-grotesk text-lavenderGR bg-blackGR ">*need to select at least one repository</h2> :
             ''}
