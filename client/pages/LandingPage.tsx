@@ -15,24 +15,32 @@ const LandingPage: React.FC = () => {
   const [authorized, setAuthorized] = useState(false);
 
   const authVerify = async (): Promise<boolean> => {
-    const response = await fetch('/api/auth/verify');
-    const data = await response.json();
+    // console.log('LandingPage: authVerify starting...');
+    try {
+      const response = await fetch('/api/auth/verify');
+      const data = await response.json();
 
-    setAuthorized(data.success);
+      setAuthorized(data.success);
 
-    if (!data.success) {
-      console.log('authorization: ❌');
+          if (!data.success) {
+            console.log('authorization: ❌');
+            return false;
+          }
+          console.log('authorization: ✅');
+
+          return true;
+
+    } catch (error) {
+      console.error('LandingPage: An error occurred in authVerify', error);
       return false;
     }
-    console.log('authorization: ✅');
-
-    return true;
 
   };
 
 
   useEffect(() => {
     const verifyAuth = async () => {
+      // console.log('LandingPage: verifyAuth starting...');
       await authVerify();
       setLoading(false);
     };
@@ -41,28 +49,34 @@ const LandingPage: React.FC = () => {
   }, []);
 
   const handleClickTopRightButton = async (): Promise<void> => {
+    // console.log('LandingPage: handleClickTopRightButton');
     const authorized = await authVerify();
     console.log('LandingPage: authorized', authorized);
     if (authorized) {
       window.location.href = '/RepoDisplay';
       return;
     }
+    try {
+      const response = await fetch('/api/auth/signin');
+      const data = await response.json();
 
-    const response = await fetch('/api/auth/signin');
-    const data = await response.json();
+      setAuthorized(data.success);
 
-    setAuthorized(data.success);
+      if (!data.success) {
+        console.log('authC: No token present. Redirecting to github signin...');
+        const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
+        // now always opens in a new tab
+        authWindow = window.open(redirectURI, '_blank');
 
-    if (!data.success) {
-      console.log('authC: No token present. Redirecting to github signin...');
-      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
-      // now always opens in a new tab
-      authWindow = window.open(redirectURI, '_blank');
+        return;
+      }
 
-      return;
+      console.log('Token already exists');
+
+    } catch (error) {
+      console.error('LandingPage: An error occurred in handleClickTopRightButton', error);
+
     }
-
-    console.log('Token exists');
   };
 
   useEffect(() => {
