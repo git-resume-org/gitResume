@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom'
 import 'normalize.css';
 import './stylesheets/scss/main.scss';
+import './stylesheets/scss/styles.scss';
 
 import App from './App';
 

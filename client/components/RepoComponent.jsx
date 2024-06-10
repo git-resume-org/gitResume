@@ -50,7 +50,7 @@ const RepoComponent = () => {
       <>
     <div className="loader w-32 h-32 border-8 border-black border-t-lavenderGR rounded-full animate-spin">
     </div>
-    <h2 className="text-white font-grotesk">Loading...</h2>
+    <h2 className="text-white font-grotesk">Repos Loading...</h2>
     </>
   )
   }

@@ -4,6 +4,8 @@ import { NavigationMenu } from '../components/ui/NavBar';
 import { Button } from '../components/ui/get-started-button';
 import { WobbleCard } from '../components/ui/wobble-card';
 import { WobbleCardDemo } from '../components/ui/key-features';
+import { HeaderUi } from '../components/ui/Header-ui';
+import { FooterUi } from '../components/ui/Footer-ui';
 
 const ghClientId = process.env.REACT_APP_GH_CLIENT_ID;
 
@@ -15,24 +17,32 @@ const LandingPage: React.FC = () => {
   const [authorized, setAuthorized] = useState(false);
 
   const authVerify = async (): Promise<boolean> => {
-    const response = await fetch('/api/auth/verify');
-    const data = await response.json();
+    // console.log('LandingPage: authVerify starting...');
+    try {
+      const response = await fetch('/api/auth/verify');
+      const data = await response.json();
 
-    setAuthorized(data.success);
+      setAuthorized(data.success);
 
-    if (!data.success) {
-      console.log('authorization: ❌');
+      if (!data.success) {
+        console.log('authorization: ❌');
+        return false;
+      }
+      console.log('authorization: ✅');
+
+      return true;
+
+    } catch (error) {
+      console.error('LandingPage: An error occurred in authVerify', error);
       return false;
     }
-    console.log('authorization: ✅');
-
-    return true;
 
   };
 
 
   useEffect(() => {
     const verifyAuth = async () => {
+      // console.log('LandingPage: verifyAuth starting...');
       await authVerify();
       setLoading(false);
     };
@@ -41,28 +51,34 @@ const LandingPage: React.FC = () => {
   }, []);
 
   const handleClickTopRightButton = async (): Promise<void> => {
+    // console.log('LandingPage: handleClickTopRightButton');
     const authorized = await authVerify();
     console.log('LandingPage: authorized', authorized);
     if (authorized) {
       window.location.href = '/RepoDisplay';
       return;
     }
+    try {
+      const response = await fetch('/api/auth/signin');
+      const data = await response.json();
 
-    const response = await fetch('/api/auth/signin');
-    const data = await response.json();
+      setAuthorized(data.success);
 
-    setAuthorized(data.success);
+      if (!data.success) {
+        console.log('authC: No token present. Redirecting to github signin...');
+        const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
+        // now always opens in a new tab
+        authWindow = window.open(redirectURI, '_blank');
 
-    if (!data.success) {
-      console.log('authC: No token present. Redirecting to github signin...');
-      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
-      // now always opens in a new tab
-      authWindow = window.open(redirectURI, '_blank');
+        return;
+      }
 
-      return;
+      console.log('Token already exists');
+
+    } catch (error) {
+      console.error('LandingPage: An error occurred in handleClickTopRightButton', error);
+
     }
-
-    console.log('Token exists');
   };
 
   useEffect(() => {
@@ -96,14 +112,12 @@ const LandingPage: React.FC = () => {
     }
   };
 
-
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {/* Fixed header section */}
-      <header className='px-8 w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg h-[90px]'>
+      {/*  <header className='px-8 w-full fixed top-0 left-0 z-50 bg-blackGR backdrop-blur-sm shadow-lg h-[90px]'>
         <div className='w-full flex items-center justify-between p-5'>
           <a href='/'><img src='/assets/images/gitResume_lg.png' alt='logo' className="w-1/6" /></a>
-          {/* centering the nav bar */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <NavigationMenu />
           </div>
@@ -113,7 +127,11 @@ const LandingPage: React.FC = () => {
             {authorized ? 'Your Repos' : 'Sign Up / Sign In'}
           </Button>
         </div>
-      </header>
+      </header> */}
+        <HeaderUi
+          buttonOnClick={handleClickTopRightButton}
+          buttonContent={authorized ? 'Your Repos' : 'Sign Up / Sign In'}>
+        </HeaderUi>
 
       {/* Main content section */}
       {/* <main className='flex-grow flex flex-col items-center justify-center w-full pt-32 px-4'>
@@ -137,7 +155,7 @@ const LandingPage: React.FC = () => {
 
       {/* Secondary content section */}
       <section className='flex-grow flex flex-col w-3/4 px-4 py-12'>
-      <h2 className="text-lavenderGR font-grotesk text-3xl py-8">Key Features</h2>
+        <h2 className="text-lavenderGR font-grotesk text-3xl py-8">Key Features</h2>
         {/* <div className='flex flex-col items-start'> */}
         {/* <div className='w-full flex flex-col items-center'> */}
         {/* <div className='w-full max-w-5xl pb-12 mx-auto'> */}
@@ -151,20 +169,22 @@ const LandingPage: React.FC = () => {
       <div className="h-6"></div> */}
 
       {/* Footer section */}
-      <footer className='w-full flex flex-col md:flex-col justify-between items-center p-6 bg-blackGR mt-auto'>
+      {/* <footer className='w-full flex flex-col md:flex-col justify-between items-center p-6 bg-blackGR mt-auto'>
         <div className='flex flex-col items-center md:items-center mb-4 md:mb-0'>
           <img src='/assets/images/gitResume_lg.png' alt='logo' className='w-1/6 transform-translate-y-1/2' />
           <h1 className='text-white text-sm text-center md:text-left'>© 2024 gitResume. All Rights Reserved.</h1>
         </div>
-        {/* <div className='text-greenGR text-md text-center md:text-left'> */}
-        {/* <h1 className="py-1">About Us</h1>
+        <div className='text-greenGR text-md text-center md:text-left'>
+        <h1 className="py-1">About Us</h1>
           <h1 className="py-1">Application</h1>
-          <h1 className="py-1">Pricing</h1> */}
-        {/* </div> */}
+          <h1 className="py-1">Pricing</h1>
+        </div>
 
-        {/* <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' /> */}
+        <img src='/assets/images/Asterisk.png' alt='asterisk' className='w-auto h-auto' />
         <div className="h-6"></div>
-      </footer>
+      </footer> */}
+
+      <FooterUi className='mt-auto'/>
     </div>
   );
 };
