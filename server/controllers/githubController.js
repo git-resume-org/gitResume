@@ -4,6 +4,7 @@ import { writeFileSync, mkdir } from 'node:fs';
 import { minimatch } from 'minimatch';
 
 import { ghService } from '../services/githubService.js';
+// import { filterBranchesByAuthorCommits, filterReposByAuthorInOrgs } from '../services/filterGhData.js';
 // new node 18 feature requires that json be imported with a type assertion
 import commonlyIgnoredFiles from '../helpers/commonlyIgnoredFiles.json' assert { type: 'json' };
 
@@ -29,6 +30,14 @@ const githubController = {};
 
 // create an instance of octokit (octokit is used to interact with the GitHub REST API in JS scripts)
 githubController.connectOctokit = (req, res, next) => {
+  // check for missing data
+  // console.log('CONNECT OCTOKIT: TOKEN:   ', req.user.token);
+  // if (!req.user.token) return next(createErr({
+  //   method: 'connectOctokit',
+  //   type: 'receiving token data',
+  //   err: 'Invalid data received'
+  // }));
+
   const octokit = new Octokit({
     auth: req.user.token
   });
@@ -75,13 +84,26 @@ githubController.getRepos = async (req, res, next) => {
 
   // gets the list of all repos which the authorized user owns or in which the user is a collaborator
   try {
+    // const userReposFromOrgs = await filterReposByAuthorInOrgs(req.user.username, res.locals.orgNames)
+
+    // console.log('githubController: getRepos: userReposFromOrgs', userReposFromOrgs);
+
     const userReposGithub = await res.locals.octokit.request('GET /user/repos', {
       affiliation: 'owner, collaborator',
       sort: 'pushed',
       // TO-DO: research what to do if request returns more than 100
       per_page: 100
     });
+    // const userReposArray = userReposGithub.data;
 
+    // console.log('githubController: getRepos: userReposFromOrgs', userReposFromOrgs.length);
+    // // userReposArray.push(  );
+
+    // console.log('githubController: getRepos: userReposArray', userReposArray.length);
+    // console.log('githubController: getRepos: userReposArray', userReposArray);
+
+    // console.log('githubController: getRepos: userReposGithub', typeof userReposGithub.data);
+    // console.log('\n\n');
     const repoPromises = userReposGithub.data.map(async repo => {
       // default for non-forked repositories
       let forkedFrom = null;
@@ -222,7 +244,7 @@ githubController.getCommits = async (req, res, next) => {
     // Promise.all allows to process async requests for commit details in parallel, which helps to reduce time of processing for a large number of commits
     const commits = await Promise.all(commitPromises);
     res.locals.commits = commits;
-
+    // res.locals.ghData.commits = commits;
     let filteredMerges = []
     const mergePromises = mergeCommits.map(async cmt => {
       // Step 1. getCommitCode is an async func, so it returns a Promise #1
@@ -270,6 +292,10 @@ githubController.getCommits = async (req, res, next) => {
     });
     const merges = await Promise.all(mergePromises); // Promise.all(mergePromises);
     res.locals.merges = merges;
+    // res.locals.commits = commits;
+
+
+    // console.log('githubController: commits, complete');
 
     if (writeFSUserCommitsToRepoBool) {
       mkdir((new URL('../../data/commits', import.meta.url)), { recursive: true }, (err) => {
@@ -307,6 +333,7 @@ githubController.getOrgs = async (req, res, next) => {
   // console.log('githubController:', response ? 'getOrgs: ✅' : 'getOrgs: ❌');
 
   // console.log('githubController.getOrgs:', response);
+
   const orgNames = await response.map(org => org.login);
 
   res.locals.orgs = response;
@@ -347,5 +374,7 @@ githubController.getCommitsByBranch = async (req, res, next) => {
   next();
 
 }
+
+
 
 export { githubController };

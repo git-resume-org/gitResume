@@ -38,7 +38,7 @@ export default {
     proxy: [{
       context: '/api',
       target: 'http://localhost:3000',
-      // secure: false, // default is false and we're using it as such
+      secure: false,
       changeOrigin: true,
     }],
   },
