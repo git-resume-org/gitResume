@@ -5,7 +5,7 @@ import { Button } from '../components/ui/get-started-button';
 import { WobbleCard } from '../components/ui/wobble-card';
 import { WobbleCardDemo } from '../components/ui/key-features';
 
-const ghClientId = process.env.REACT_APP_GH_CLIENT_ID;
+const GH_CLIENT_ID = process.env.REACT_APP_GH_CLIENT_ID;
 
 // import { HoverBorderGradientButton } from '../components/ui/get-started-button-v2';
 
@@ -55,46 +55,47 @@ const LandingPage: React.FC = () => {
 
     if (!data.success) {
       console.log('authC: No token present. Redirecting to github signin...');
-      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&scope=repo`;
+      const redirectURI = `https://github.com/login/oauth/authorize?client_id=${GH_CLIENT_ID}&scope=repo&prompt=login`;
       // now always opens in a new tab
-      authWindow = window.open(redirectURI, '_blank');
-
+      // authWindow = window.open(redirectURI, '_blank');
+      window.location.href = redirectURI;
       return;
     }
 
     console.log('Token exists');
   };
 
-  useEffect(() => {
-    window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener('message', handleMessage);
+  //   return () => {
+  //     window.removeEventListener('message', handleMessage);
+  //   };
+  // }, []);
 
-  const handleMessage = async (event: MessageEvent) => {
-    if (typeof event.data === 'string') {
-      console.log('LandingPage: message', event);
-      // Could be 'success' or 'failure'
-      if (event.data === 'success') {
-        console.log('LandingPage: handleMessage: success');
-        try {
-          const response = await fetch('/api/github/repos');
-          const data = await response.json();
-          console.log('LandingPage: repos fetched', data);
-        } catch (error) {
-          console.error('LandingPage: An error occurred in fetching repos', error);
-        }
-        setTimeout(() => {
-          // momentarily delaying the redirect so the user can see the homepage again after the auth window is closed
-          window.location.href = '/RepoDisplay';
-        }, 250);
+  // const handleMessage = async (event: MessageEvent) => {
+  //   if (typeof event.data === 'string') {
+  //     console.log('LandingPage: message', event);
+  //     // Could be 'success' or 'failure'
+  //     if (event.data === 'success') {
+  //       console.log('LandingPage: handleMessage: success');
+  //       try {
+  //         const response = await fetch('/api/github/repos');
+  //         const data = await response.json();
+  //         console.log('LandingPage: repos fetched', data);
+  //       } catch (error) {
+  //         console.error('LandingPage: An error occurred in fetching repos', error);
+  //       }
+  //       // setTimeout(() => {
+  //       //   // momentarily delaying the redirect so the user can see the homepage again after the auth window is closed
+  //       //   window.location.href = '/RepoDisplay';
+  //       // }, 250);
+  //         window.location.href = '/RepoDisplay';
 
-      } else {
-        console.error('LandingPage: An error occurred in listening to the message event', event.data);
-      }
-    }
-  };
+  //     } else {
+  //       console.error('LandingPage: An error occurred in listening to the message event', event.data);
+  //     }
+  //   }
+  // };
 
 
   return (

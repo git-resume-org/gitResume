@@ -11,6 +11,7 @@ config();
 
 const ghClientId = process.env.GH_CLIENT_ID;
 const secretKey = process.env.SECRET_KEY;
+const clientUrl = process.env.NODE_ENV === 'production' ? process.env.CLIENT_URL_PROD : process.env.CLIENT_URL_DEV;
 
 // the controller to call to check if token exists
 
@@ -96,14 +97,13 @@ authC.cookiesSet = async (req, res, next) => {
 
     console.log('authC: cookiesSet: about to close window');
 
-    next();
+    // next();
 
-    res.send(`
-    <script>
-    window.opener.postMessage('success', '*');
-    window.close();
-    </script>
-    `);
+    res.send(
+      `<script>
+      window.location.href = '${clientUrl}/repoDisplay';
+      </script>`
+    );
   } catch (error) {
     console.log(error);
     res.status(500).send('An error occurred');
